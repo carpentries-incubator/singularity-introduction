@@ -32,11 +32,13 @@ If the target platform uses a version of MPI based on [MPICH](https://www.mpich.
 
 As described in Singularity's [MPI documentation](https://sylabs.io/guides/3.5/user-guide/mpi.html), support for both OpenMPI and MPICH is provided. Instructions are given for building the relevant MPI version from source via a definition file and we'll see this used in an example below.
 
+#### **Container portability and performance on HPC platforms**
+
 While building a container on a local system that is intended for use on a remote HPC platform does provide some level of portability, if you're after the best possible performance, it can present some issues. The version of MPI in the container will need to be built and configured to support the hardware on your target platform if the best possible performance is to be achieved. Where a platform has specialist hardware with proprietary drivers, building on a different platform with different hardware present means that building with the right driver support for optimal performance is not likely to be possible. This is especially true if the version of MPI available is different (but compatible). Singularity's [MPI documentation](https://sylabs.io/guides/3.5/user-guide/mpi.html) highlights two different models for working with MPI codes. The _[hybrid model](https://sylabs.io/guides/3.5/user-guide/mpi.html#hybrid-model)_ that we'll be looking at here involves using the MPI executable from the MPI installation on the host system to launch singularity and run the application within the container. The application in the container is linked against and uses the MPI installation within the container which, in turn, communicates with the MPI daemon process running on the host system. In the following section we'll look at building a Singularity image containing a small MPI application that can then be run using the hybrid model.
 
 ### Building and running a Singularity image for an MPI code
 
-#### Building and testing an image
+#### **Building and testing an image**
 
 This example makes the assumption that you'll be building a container image on a local platform and then deploying it to a cluster with a different but compatible MPI implementation. See [Singularity and MPI applications](https://sylabs.io/guides/3.5/user-guide/mpi.html#singularity-and-mpi-applications) in the Singularity documentation for further information on how this works.
 
@@ -44,7 +46,7 @@ We'll build an image from a definition file. Containers based on this image will
 
 In this example, the target platform is a remote HPC cluster that uses [Intel MPI](https://software.intel.com/content/www/us/en/develop/tools/mpi-library.html). The container can be built via the Singularity Docker image that we used in the previous episode of the Singularity material.
 
-Begin by creating a directory and, within that directory, downloading and saving the "tarballs" for version 5.6.2 of the OSU Micro-Benchmarks from the [OSU Micro-Benchmarks page](https://mvapich.cse.ohio-state.edu/benchmarks/) and for [MPICH version 3.3.2] from the [MPICH downloads page](https://www.mpich.org/downloads/).
+Begin by creating a directory and, within that directory, downloading and saving the "tarballs" for version 5.7.1 of the OSU Micro-Benchmarks from the [OSU Micro-Benchmarks page](https://mvapich.cse.ohio-state.edu/benchmarks/) and for MPICH version 3.4.2 from the [MPICH downloads page](https://www.mpich.org/downloads/).
 
 In the same directory, save the following definition file content to a `.def` file, e.g. `osu_benchmarks.def`:
 
@@ -53,8 +55,8 @@ Bootstrap: docker
 From: ubuntu:20.04
 
 %files
-    /home/singularity/osu-micro-benchmarks-5.6.3.tar.gz /root/
-    /home/singularity/mpich-3.3.2.tar.gz /root/
+    /home/singularity/osu-micro-benchmarks-5.7.1.tgz /root/
+    /home/singularity/mpich-3.4.2.tar.gz /root/
 
 %environment
     export SINGULARITY_MPICH_DIR=/usr
@@ -62,12 +64,12 @@ From: ubuntu:20.04
 %post
     apt-get -y update && DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential libfabric-dev libibverbs-dev gfortran
     cd /root
-    tar zxvf mpich-3.3.2.tar.gz && cd mpich-3.3.2
+    tar zxvf mpich-3.4.2.tar.gz && cd mpich-3.4.2
     echo "Configuring and building MPICH..."
     ./configure --prefix=/usr --with-device=ch3:nemesis:ofi && make -j2 && make install
     cd /root
-    tar zxvf osu-micro-benchmarks-5.6.3.tar.gz
-    cd osu-micro-benchmarks-5.6.3/
+    tar zxvf osu-micro-benchmarks-5.7.1.tgz
+    cd osu-micro-benchmarks-5.7.1/
     echo "Configuring and building OSU Micro-Benchmarks..."
     ./configure --prefix=/usr/local/osu CC=/usr/bin/mpicc CXX=/usr/bin/mpicxx
     make -j2 && make install
