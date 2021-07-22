@@ -68,3 +68,7 @@ This provides us with some more useful information about the actual images store
 >
 > You can also remove specific images or all images of a particular type. Look at the output of `singularity cache clean --help` for more information.
 {: .callout}
+
+> ## Cache location
+> By default, Singularity uses `$HOME/.singularity/cache` as the location for the cache. You can change the location of the cache by setting the `SINGULARITY_CACHEDIR` environment variable to the cache location you want to use.
+{: .callout}
