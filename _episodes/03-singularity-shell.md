@@ -6,7 +6,7 @@ questions:
 - "How do I run different commands within a container?"
 - "How do I access an interactive shell within a container?"
 objectives:
-- "Learn how to run different commands when starting a container.@
+- "Learn how to run different commands when starting a container."
 - "Learn how to open an interactive shell within a container environment."
 keypoints:
 - "The `singularity exec` and `singularity shell` commands provide different options for starting containers."

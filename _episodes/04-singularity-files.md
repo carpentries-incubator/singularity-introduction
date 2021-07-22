@@ -6,7 +6,7 @@ questions:
 - "How do I make data available in a Singularity container?"
 - "What data is made available by default in a Singularity container?"
 objectives:
-- "Understand that some data from the host system is usually made available by default within a container
+- "Understand that some data from the host system is usually made available by default within a container"
 - "Learn more about how Singularity handles users and binds directories from the host filesystem."
 keypoints:
 - "Your current directory and home directory are usually available by default in a container."
