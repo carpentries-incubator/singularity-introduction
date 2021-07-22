@@ -1,7 +1,7 @@
 ---
 title: "Using Docker images with Singularity"
-teaching: 30
-exercises: 20
+teaching: 5
+exercises: 5
 questions:
 - "How do I use Docker images with Singularity?"
 objectives:
