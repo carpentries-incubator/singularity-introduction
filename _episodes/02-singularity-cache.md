@@ -9,8 +9,8 @@ objectives:
 - "Learn about Singularity's image cache."
 - "Learn how to manage Singularity images stored locally."
 keypoints:
-- "Singularity caches downloaded images so that an image isn't downloaded again when it is requested using the `singularity pull` command."
-- "You can free up space in the cache by removing all images or specific ones."
+- "Singularity caches downloaded images so that an unchanged image isn't downloaded again when it is requested using the `singularity pull` command."
+- "You can free up space in the cache by removing all locally cached images or by specifying individual images to remove."
 ---
 
 ## Singularity's image cache
