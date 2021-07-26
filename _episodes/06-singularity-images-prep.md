@@ -66,6 +66,9 @@ The [Singularity Docker image](https://quay.io/repository/singularity/singularit
 > 
 > _Hint: To be able to build an image using the Docker Singularity container, you'll need to add the `--privileged` switch to your docker command line._
 > 
+> _Hint: If you want to run a shell within the Docker Singularity container, you'll need to override the entrypoint to tell the container to run `/bin/bash` - take a look at Docker's `--entrypoint` switch._
+> 
+> 
 > Questions:
 > 
 > 1. What is happening when you run a container from the Docker Singularity image?
