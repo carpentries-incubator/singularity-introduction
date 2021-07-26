@@ -97,7 +97,7 @@ _Note that base path of the the executable to run is hardcoded in the run script
 >
 > Using the above definition file, build a Singularity image named `osu_benchmarks.sif`.
 > 
-> Once you have built the image, use it to run the `osu_hello` benchmark that is found in the `startup` benchmark folder.
+> Once the image has finished building, test it by running the `osu_hello` benchmark that is found in the `startup` benchmark folder.
 > 
 > _NOTE: If you're not using the Singularity Docker image to build your Singularity image, you will need to edit the path to the .tar.gz file in the `%files` section of the definition file._
 > 
@@ -250,6 +250,6 @@ If performance is an issue for you with codes that you'd like to run via Singula
 
 ## Singularity wrap-up
 
-This concludes the 4 episodes of the course covering Singularity. We hope you found this information useful and that it has inspired you to use Singularity to help enhance the way you build/work with research software.
+This concludes the 8 episodes of the course covering Singularity. We hope you found this information useful and that it has inspired you to use Singularity to help enhance the way you build/work with research software.
 
 As a new set of material, we appreciate that there are likely to be improvements that can be made to enhance the quality of this material. We welcome your thoughts, suggestions and feedback on improvements that could be made to help others making use of these lessons.
