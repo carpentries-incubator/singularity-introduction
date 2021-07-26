@@ -15,18 +15,25 @@ keypoints:
 - "The `singularity` command can be used to pull images from Singularity Hub and run a container from an image file."
 ---
 
-The episodes in this lesson will introduce you to the [Singularity](https://sylabs.io/singularity/) container platform and demonstrating how to set up and use Singularity.
+The episodes in this lesson will introduce you to the [Singularity](https://sylabs.io/singularity/) container platform and demonstrate how to set up and use Singularity.
 
 This material is split into 2 parts:
 
 *Part I: Basic usage, working with images*
  1. **Singularity: Getting started**: This introductory episode
- 1. **Working with Singularity containers**: Going into a little more detail about Singularity containers and how to work with them
- 
+    
+Working with Singularity containers:
+<ol start="2">
+ <li><strong>The singularity cache: </strong> Why, where and how does Singularity cache images locally?</li>
+ <li><strong>Running commands within a Singularity container: </strong> How to run commands within a Singularity container.</li>
+ <li><strong>Working with files and Singularity containers: </strong> Moving files into a Singularity container; accessing files on the host from within a container.</li>
+ <li><strong>Using Docker images with Singularity: </strong>How to run Singularity containers from Docker images.</li>
+ </ol>
  *Part II: Creating images, running parallel codes*
- <ol start="3">
-   <li><strong>Building Singularity images</strong>: Explaining how to build and share your own Singularity images</li>
-   <li><strong>Running MPI parallel jobs using Singularity containers</strong>: Explaining how to run MPI parallel codes from within Singularity containers</li>
+ <ol start="6">
+   <li><strong>Preparing to build Singularity images</strong>: Getting started with the Docker Singularity container.</li>
+   <li><strong>Building Singularity images</strong>: Explaining how to build and share your own Singularity images.</li>
+   <li><strong>Running MPI parallel jobs using Singularity containers</strong>: Explaining how to run MPI parallel codes from within Singularity containers.</li>
 </ol>
 
 > ## Work in progress...
@@ -42,12 +49,12 @@ This material is split into 2 parts:
 System administrators will not, generally, install Docker on shared computing platforms such as lab desktops, research clusters or HPC platforms because the design of Docker presents potential security issues for shared platforms with multiple users. Singularity, on the other hand, can be run by end-users entirely within "user space", that is, no special administrative privileges need to be assigned to a user in order for them to run and interact with containers on a platform where Singularity has been installed.
 
 ## Getting started with Singularity
-Initially developed within the research community, Singularity is open source and the [repository](https://github.com/hpcng/singularity) is currently available in the "[The Next Generation of High Performance Computing](https://github.com/hpcng)" GitHub organisation. Part I of the Singularity material is intended to be undertaken on a remote platform where Singularity has been pre-installed. 
+Initially developed within the research community, Singularity is open source and the [repository](https://github.com/hpcng/singularity) is currently available in the "[The Next Generation of High Performance Computing](https://github.com/hpcng)" GitHub organisation. Part I of this Singularity material is intended to be undertaken on a remote platform where Singularity has been pre-installed. 
 
 _If you're attending a taught version of this course, you will be provided with access details for a remote platform made available to you for use for Part I of the Singularity material. This platform will have the Singularity software pre-installed._
 
 > ## Installing Singularity on your own laptop/desktop
-> If you have a Linux system on which you have administrator access and you would like to install Singularity on this system, some information is provided at the start of [Part II of the Singularity material]({{ page.root }}/11-singularity-images/).
+> If you have a Linux system on which you have administrator access and you would like to install Singularity on this system, some information is provided at the start of [Part II of the Singularity material]({{ page.root }}/06-singularity-images-prep/index.html#installing-singularity-on-your-local-system-optional-advanced-task).
 {: .callout}
 
 Sign in to the remote platform, with Singularity installed, that you've been provided with access to. Check that the `singularity` command is available in your terminal:
@@ -85,10 +92,10 @@ A **_container_** is a virtual environment that is based on an image. That is, t
 
 If you recall from learning about Docker, Docker images are formed of a set of _layers_ that make up the complete image. When you pull a Docker image from Docker Hub, you see the different layers being downloaded to your system. They are stored in your local Docker repository on your system and you can see details of the available images using the `docker` command.
 
-Singularity images are a little different. Singularity uses the [Signularity Image Format (SIF)](https://github.com/sylabs/sif) and images are provided as single `SIF` files. Singularity images can be pulled from [Singularity Hub](https://singularity-hub.org/), a registry for container images. Singularity is also capable of running containers based on images pulled from [Docker Hub](https://hub.docker.com/) and some other sources. We'll look at accessing containers from Docker Hub later in the Singularity material.
+Singularity images are a little different. Singularity uses the [Signularity Image Format (SIF)](https://github.com/sylabs/sif) and images are provided as single `SIF` files (with a `.sif` filename extension). Singularity images can be pulled from [Singularity Hub](https://singularity-hub.org/), a registry for container images. Singularity is also capable of running containers based on images pulled from [Docker Hub](https://hub.docker.com/) and some other sources. We'll look at accessing containers from Docker Hub later in the Singularity material.
 
 > ## Singularity Hub
-> Note that in addition to providing a repository that you can pull images from, [Singularity Hub](https://singularity-hub.org/) can also build Singularity images for you from a `recipe` - a configuration file defining the steps to build an image. We'll look at recipes and building images later.
+> Note that in addition to providing a repository that you can pull images from, [Singularity Hub](https://singularity-hub.org/) can also build Singularity images for you from a _**recipe**_ - a configuration file defining the steps to build an image. We'll look at recipes and building images later.
 {: .callout}
 
 Let's begin by creating a `test` directory, changing into it and _pulling_ a test _Hello World_ image from Singularity Hub:
@@ -106,7 +113,7 @@ INFO:    Downloading shub image
 ~~~
 {: .output}
 
-What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name `hello-world.sif`. If you run the `ls` command, you should see that the `hello-world.sif` file is now in your current directory. This is our image and we can now run a container based on this image:
+What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name `hello-world.sif` in the current directory. If you run the `ls` command, you should see that the `hello-world.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
 $ singularity run hello-world.sif
@@ -123,7 +130,7 @@ The above command ran the _hello-world_ container from the image we downloaded f
 
 How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
 
-When you run a container from an image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
+When you run a container from a Singularity image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
 
 ~~~
 $ singularity inspect -r hello-world.sif
