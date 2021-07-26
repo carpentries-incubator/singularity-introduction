@@ -9,7 +9,8 @@ objectives:
 - "Learn how to run different commands when starting a container."
 - "Learn how to open an interactive shell within a container environment."
 keypoints:
-- "The `singularity exec` and `singularity shell` commands provide different options for starting containers."
+- "The `singularity exec` is an alternative to `singularity run` that allows you to start a container running a specific command."
+- "The `singularity shell` command can be used to start a container and run an interactive shell within it."
 ---
 
 ## Running specific commands within a container
@@ -29,6 +30,8 @@ Hello World!
 {: .output}
 
 Here we see that a container has been started from the `hello-world.sif` image and the `/bin/echo` command has been run within the container, passing the input `Hello World!`. The command has echoed the provided input to the console and the container has terminated.
+
+Note that the use of `singularity exec` has overriden any run script set within the image metadata and the command that we specified as an argument to `singularity exec` has been run instead.
 
 > ## Basic exercise: Running a different command within the "hello-world" container
 >
@@ -59,7 +62,9 @@ two commands is:
    based on the specfied image. This default command is set within
    the image metadata when the image is built (we'll see more about this
    in later episodes). You do not specify a command to run when using
-   `singularity run`, you simply specify the image file name.
+   `singularity run`, you simply specify the image file name. As we saw 
+   earlier, you can use the `singularity inspect` command to see what command
+   is run by default when starting a new container based on an image.
 
  - `singularity exec`: This will start a container based on the specified
    image and run the command provided on the command line following
@@ -87,7 +92,7 @@ Singularity>
 
 As shown above, we have opened a shell in a new container started from the `hello-world.sif` image. Note that the shell prompt has changed to show we are now within the Singularity container.
 
-> ## Running a shell inside a Singularity container
+> ## Discussion: Running a shell inside a Singularity container
 >
 > Q: What do you notice about the output of the above commands entered within the Singularity container shell?
 > 
