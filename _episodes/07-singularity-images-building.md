@@ -13,94 +13,11 @@ keypoints:
 - "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Singularity images."
 ---
 
-# Singularity - Part II
-
-## Brief recap
-
-In the two episodes covering Part I of this Singularity material we've seen how Singularity can be used on a computing platform where you don't have any administrative privileges. The software was pre-installed and it was possible to work with existing images such as Singularity image files already stored on the platform or images obtained from a remote image repository such as Singularity Hub or Docker Hub.
-
-It is clear that between Singularity Hub and Docker Hub there is a huge array of images available, pre-configured with a wide range of software applications, tools and services. But what if you want to create your own images or customise existing images?
-
-In this first of two episodes in Part II of the Singularity material, we'll look at building Singularity images.
-
-## Preparing to use Singularity for building images
-
-So far you've been able to work with Singularity from your own user account as a non-privileged user. This part of the Singularity material requires that you use Singularity in an environment where you have administrative (root) access. While it is possible to build Singularity containers without root access, it is highly recommended that you do this as the _root_ user, as highlighted in [this section](https://sylabs.io/guides/3.5/user-guide/build_a_container.html#creating-writable-sandbox-directories) of the Singularity documentation. Bear in mind that the system that you use to build containers doesn't have to be the system where you intend to run the containers. If, for example, you are intending to build a container that you can subsequently run on a Linux-based cluster, you could build the container on your own Linux-based desktop or laptop computer. You could then transfer the built image directly to the target platform or upload it to an image repository and pull it onto the target platform from this repository.
-
-There are **three** different options for accessing a suitable environment to undertake the material in this part of the course:
-
- 1. Run Singularity from within a Docker container - this will enable you to have the required privileges to build images
- 1. Install Singularity locally on a system where you have administrative access
- 1. Use Singularity on a system where it is already pre-installed and you have administrative (root) access
-
-We'll focus on the first option in this part of the course - _running singularity from within a Docker container_. If you would like to install Singularity directly on your system, see the box below for some further pointers. Note that the installation process is an advanced task that is beyond the scope of this course so we won't be covering this.
-
-> ## Installing Singularity on your local system (optional) \[Advanced task\]
->
-> If you are running Linux and would like to install Singularity locally on your system, the source code is provided via the [The Next Generation of High Performance Computing (HPCng) community](https://github.com/hpcng)'s [Singularity repository](https://github.com/hpcng/singularity). See the releases [here](https://github.com/hpcng/singularity/releases). You will need to install various dependencies on your system and then build Singularity from source code.
->
-> _If you are not familiar with building applications from source code, it is strongly recommended that you use the Docker Singularity image, as described below in the "Getting started with the Docker Singularity image" section rather than attempting to build and install Singularity yourself. The installation process is an advanced task that is beyond the scope of this session._
-> 
-> However, if you have Linux systems knowledge and would like to attempt a local install of Singularity, you can find details in the [INSTALL.md](https://github.com/hpcng/singularity/blob/master/INSTALL.md) file within the Singularity repository that explains how to install the prerequisites and build and install the software. Singularity is written in the [Go](https://golang.org/) programming language and Go is the main dependency that you'll need to install on your system. The process of installing Go and any other requirements is detailed in the INSTALL.md file.
-> 
-{: .callout}
-
-> ## Note
-> If you do not have access to a system with Docker installed, or a Linux system where you can build and install Singularity but you have administrative privileges on another system, you could look at installing a virtualisation tool such as [VirtualBox](https://www.virtualbox.org/) on which you could run a Linux Virtual Machine (VM) image. Within the Linux VM image, you will be able to install Singularity. Again this is beyond the scope of the course.
->
-> If you are not able to access/run Singularity yourself on a system where you have administrative privileges, you can still follow through this material as it is being taught (or read through it in your own time if you're not participating in a taught version of the course) since it will be helpful to have an understanding of how Singularity images can be built.
-> 
-> You could also attempt to follow this section of the lesson without using root and instead using the `singularity` command's [`--fakeroot`](https://sylabs.io/guides/3.5/user-guide/fakeroot.html) option. However, you may encounter issues with permissions when trying to build images and run your containers and this is why running the commands as root is strongly recommended and is the approach described in this lesson.
-{: .callout}
-
-## Getting started with the Docker Singularity image
-
-The [Singularity Docker image](https://quay.io/repository/singularity/singularity) is available from [Quay.io](https://quay.io/).
-
-> ## Familiarise yourself with the Docker Singularity image
-> - Using your previously acquired Docker knowledge, get the Singularity image for `v3.5.3` and ensure that you can run a Docker container using this image.
-> 
-> - Create a directory (e.g. `$HOME/singularity_data`) on your host machine that you can use for storage of _definition files_ (we'll introduce these shortly) and generated image files. 
-> 
->   This directory should be bind mounted into the Docker container at the location `/home/singularity` every time you run it - this will give you a location in which to store built images so that they are available on the host system once the container exits. (take a look at the `-v` switch to the `docker run` command)
-> 
-> _Hint: To be able to build an image using the Docker Singularity container, you'll need to add the `--privileged` switch to your docker command line._
-> 
-> Questions:
-> 
-> - What is happening when you run the container?
-> - Can you run an interactive shell in the container?
-> 
-> > ## Running the image
-> > Having a bound directory from the host system accessible within your running Singularity container will give you somewhere to place created images so that they are accessible on the host system after the container exits. Begin by changing into the directory that you created above for storing your definiton files and built images (e.g. `$HOME/singularity_data`). 
-> >
-> > You may choose to:
-> >   - open a shell within the Docker image so you can work at a command prompt and run the `singularity` command directly
-> >   - use the `docker run` command to run a new container instance every time you want to run the `singularity` command.
-> > 
-> > Either option is fine for this section of the material.
-> > 
-> > _Some examples:_
-> > 
-> > To run the `singularity cache list` command within the docker container directly from the host system's terminal:
-> > ```
-> > docker run --privileged --rm -v ${PWD}:/home/singularity quay.io/singularity/singularity:v3.5.3 cache list
-> > ```
-> > 
-> > To start a shell within the Singularity Docker container where the `singularity` command can be run directly:
-> > ```
-> > docker run -it --entrypoint=/bin/bash --privileged --rm -v ${PWD}:/home/singularity quay.io/singularity/singularity:v3.5.3
-> > ```
-> > 
-> > To make things easier to read in the remainder of the material, command examples will use the `singularity` command directly, e.g. `singularity cache list`. If you're running a shell in the Docker container, you can enter the commands as they appear. If you're using the container's default run behaviour and running a container instance for each run of the command, you'll need to replace `singularity` with `docker run --privileged -v ${PWD}:/home/singularity quay.io/singularity/singularity:v3.5.3` or similar.
-> {: .solution}
-{: .challenge}
-
 ## Building Singularity images
 
 ### Introduction
 
-As a platform that is widely used in the scientific/research software and HPC communities, Singularity provides great support for reproducibility. If you build a Singularity container for some scientific software, it's likely that you and/or others will want to be able to reproduce exactly the same environment again. Maybe you want to verify the results of the code or provide a means that others can use to verify the results to support a paper or report. Maybe you're making a tool available to others and want to ensure that they have exactly the right version/configuration of the code.
+As a platform that is widely used in the scientific/research software and HPC communities, Singularity provides great support for reproducibility. If you build a Singularity image for some scientific software, it's likely that you and/or others will want to be able to reproduce exactly the same environment again. Maybe you want to verify the results of the code or provide a means that others can use to verify the results to support a paper or report. Maybe you're making a tool available to others and want to ensure that they have exactly the right version/configuration of the code.
 
 Similarly to Docker and many other modern software tools, Singularity follows the "Configuration as code" approach and a container configuration can be stored in a file which can then be committed to your version control system alongside other code. Assuming it is suitably configured, this file can then be used by you or other individuals (or by automated build tools) to reproduce a container with the same configuration at some point in the future.
 
@@ -244,22 +161,11 @@ Now move your created `.sif` image file to a platform with an installation of Si
 
 > ## Cluster platform configuration for running Singularity containers
 >
-> On the cluster platform that we're using for the course, it is necesary to setup a shared temporary storage space for Singularity to use because it is not possible for it to use the standard `/tmp` directory on this platform.
->
-> First create a directory in the `/lustre/home/shared` directory. It is recommended that you create a directory named `$USER-singularity`. We then need to set Singularity's temporary directory environment variable to point to this location. Run the following commands:
->
-> ~~~
-> mkdir /lustre/home/shared/$USER-singularity
-> export TMPDIR=/lustre/home/shared/$USER-singularity
-> export SINGULARITY_TMPDIR=$TMPDIR
-> ~~~
-> {: .language-bash}
->
-> When running Singularity containers on this platform, you'll need to set `SINGULARITY_TMPDIR` in each shell session that you open. However, you could add these commands to your `~/.bashrc` or `~/.bash_profile` so that the values are set by default in each shell that you open.
+> _**Note to instructors:** Add details into this box of any custom configuration that needs to be done on the cluster platform or other remote system that you're providing access to for the purpose of undertaking this course. If `singularity` does not require any custom configuration by the user on the host platform, you can remove this box._
 > 
 {: .callout}
 
-It is recommended that you move the create `.sif` file to a platform with an installation of Singularity, rather than attempting to run the image using the Docker container. However, if you do try to use the Docker container, see the notes below on "_Using singularity run from within the Docker container_" for further information.
+It is recommended that you move the created `.sif` file to a platform with an installation of Singularity, rather than attempting to run the image using the Docker container. However, if you do wish to try using the Docker container, see the notes below on "_Using singularity run from within the Docker container_" for further information.
 
 Now that we've built an image, we can attempt to run it:
 
@@ -279,7 +185,7 @@ Hello World! Hello from our custom Singularity image!
 >
 > It is strongly recommended that you don't use the Docker container for running Singularity images, only for creating them, since the Singularity command runs within the container as the root user.
 > 
-> However, for the purposes of this simple example, if you are trying to run the container using the `singularity` command from within the Docker container, it is likely that you will get an error relating to `/etc/localtime` similar to the following:
+> However, for the purposes of this simple example, and potentially for testing/debugging purposes it is useful to know how to run a Singularity container within the Docker Singularity container. You may recall from the [Running a container from the image](/06-singularity-images-prep/index.html#running-a-container-from-the-image) section in the previous episode that we used the `--contain` switch to singulairty. If you don't use this switch, it is likely that you will get an error relating to `/etc/localtime` similar to the following:
 >
 > ~~~
 > WARNING: skipping mount of /etc/localtime: no such file or directory
@@ -287,7 +193,7 @@ Hello World! Hello from our custom Singularity image!
 > ~~~
 > {: .output}
 > 
-> This occurs because the `/etc/localtime` file that provides timezone configuration is not present within the Docker container. If you want to use the Docker container to test that your newly created image runs, you'll need to open a shell in the Docker container and add a timezone configuration as described in the [Alpine Linux documentation](https://wiki.alpinelinux.org/wiki/Setting_the_timezone):
+> This occurs because the `/etc/localtime` file that provides timezone configuration is not present within the Docker container. If you want to use the Docker container to test that your newly created image runs, you can use the `--contain` switch, or you can open a shell in the Docker container and add a timezone configuration as described in the [Alpine Linux documentation](https://wiki.alpinelinux.org/wiki/Setting_the_timezone):
 >
 > ~~~
 > $ apk add tzdata
@@ -295,7 +201,7 @@ Hello World! Hello from our custom Singularity image!
 > ~~~
 > {: .language-bash}
 > 
-> The `singularity run` command should now work successfully.
+> The `singularity run` command should now work successfully. Bear in mind that once you exit the Docker Singularity container shell and shutdown the container, this configuration will not persist.
 {: .callout}
 
 

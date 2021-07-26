@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Slurm job options (name, compute nodes, job time)
+#SBATCH --job-name=<YOUR JOB NAME>
+#SBATCH --time=0:10:0
+#SBATCH --nodes=2
+#SBATCH --tasks-per-node=128
+#SBATCH --cpus-per-task=1
+
+# Replace [budget code] below with your budget code (e.g. t01)
+#SBATCH --partition=standard
+#SBATCH --qos=standard
+#SBATCH --account=<YOUR ACCOUNT CODE>
+
+# Setup the job environment (this module needs to be loaded before any other modules)
+module load epcc-job-env
+
+# Set the number of threads to 1
+#   This prevents any threaded system libraries from automatically 
+#   using threading.
+export OMP_NUM_THREADS=1
+
+# Set the LD_LIBRARY_PATH environment variable within the Singularity container
+# to ensure that it used the correct MPI libraries
+export SINGULARITYENV_LD_LIBRARY_PATH=/opt/cray/pe/mpich/8.0.16/ofi/gnu/9.1/lib-abi-mpich:/usr/lib/x86_64-linux-gnu/libibverbs:/opt/cray/pe/pmi/6.0.7/lib:/opt/cray/libfabric/1.11.0.0.233/lib64:/usr/lib64/host:/.singularity.d/libs
+
+# Set the options for the Singularity executable
+#   This makes sure the locations with Cray Slingshot interconnect libraries are available
+singopts="-B /opt/cray,/usr/lib64:/usr/lib64/host,/usr/lib64/tcl,/var/spool/slurmd/mpi_cray_shasta"
+
+# Launch the parallel job
+srun --hint=nomultithread --distribution=block:block singularity run $singopts osu_benchmarks.sif collective/osu_allreduce

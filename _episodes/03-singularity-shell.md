@@ -48,6 +48,25 @@ Here we see that a container has been started from the `hello-world.sif` image a
 > {: .solution}
 {: .challenge}
 
+<br/>
+#### **The difference between `singularity run` and `singularity exec`**
+
+Above we used the `singularity exec` command. In earlier episodes of this
+course we used `singularity run`. To clarify, the difference between these
+two commands is:
+
+ - `singularity run`: This will run the default command set for containers
+   based on the specfied image. This default command is set within
+   the image metadata when the image is built (we'll see more about this
+   in later episodes). You do not specify a command to run when using
+   `singularity run`, you simply specify the image file name.
+
+ - `singularity exec`: This will start a container based on the specified
+   image and run the command provided on the command line following
+   `singularity exec <image file name>`. This will override any default
+   command specified within the image metadata that would otherwise be
+   run if you used `singularity run`.
+
 ## Opening an interactive shell within a container
 
 If you want to open an interactive shell within a container, Singularity provides the `singularity shell` command. Again, using the `hello-world.sif` image, and within our `test` directory, we can run a shell within a container from the hello-world image:
