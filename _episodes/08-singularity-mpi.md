@@ -76,8 +76,8 @@ From: ubuntu:20.04
     make -j2 && make install
 
 %runscript
-    echo "Rank ${PMI_RANK} - About to run: /usr/local/osu/libexec/osu-micro-benchmarks/mpi/$*"
-    exec $OSU_DIR/$*
+    echo "Rank ${PMI_RANK} - About to run: ${OSU_DIR}/$*"
+    exec ${OSU_DIR}/$*
 ~~~
 {: .output}
 
@@ -111,14 +111,14 @@ _Note that base path of the the executable to run (`$OSU_DIR`) is hardcoded in t
 > > ~~~
 > > {: .language-bash}
 > >
-> > _Note that if you're running the Singularity Docker container directly from the command line to undertake your build, you'll need to provide the full path to the `.def` file **within** the container_ - it is likely that this will be different to the file path on your host system. For example, if you've bind mounted the directory on your local system containing the file to `/home/singularity` within the container, the full path to the `.def` file will be `/home/singularity/osu_benchmarks.def`._
+> > _Note that if you're running the Singularity Docker container directly from the command line to undertake your build, you'll need to provide the full path to the `.def` file **within** the container_ - it is likely that this will be different to the file path on your host system. For example, if you've bind mounted the directory on your local system containing the file to `/home/singularity` within the container, the full path to the `.def` file will be `/home/singularity/osu_benchmarks.def`.
 > >
 > > Assuming the image builds successfully, you can then try running the container locally and also transfer the SIF file to a cluster platform that you have access to (that has Singularity installed) and run it there.
 > > 
-> > Let's begin with a single-process run of `osu_hello` on _your local system_ (where you built the container) to ensure that we can run the container as expected. We'll use the MPI installation _within_ the container for this test. _Note that when we run a parallel job on an HPC cluster platform, we use the MPI installation on the cluster to coordinate the run so things are a little different..._
+> > Let's begin with a single-process run of `startup/osu_hello` on _your local system_ (where you built the container) to ensure that we can run the container as expected. We'll use the MPI installation _within_ the container for this test. _Note that when we run a parallel job on an HPC cluster platform, we use the MPI installation on the cluster to coordinate the run so things are a little different..._
 > > 
-> > Start a shell in Singularity container based on your image and then run a single process job via `mpirun`:
-
+> > Start a shell in the Singularity container based on your image and then run a single process job via `mpirun`:
+> > 
 > > ~~~
 > > $ singularity shell --contain /home/singularity/osu_benchmarks.sif
 > > Singularity> mpirun -np 1 $OSU_DIR/startup/osu_hello
@@ -132,11 +132,10 @@ _Note that base path of the the executable to run (`$OSU_DIR`) is hardcoded in t
 > > This is a test with 1 processes
 > > ~~~
 > > {: .output}
-> > 
 > {: .solution}
 {: .challenge}
 
-#### Running Singularity containers via MPI
+#### **Running Singularity containers via MPI**
 
 Assuming the above tests worked, we can now try undertaking a parallel run of one of the OSU benchmarking tools within our container image.
 
@@ -183,7 +182,7 @@ We can now try running a 2-process MPI run of a point to point benchmark `osu_la
 
 
 > ## Undertake a parallel run of the `osu_latency` benchmark (taught course cluster example)
-> _**Note to instructors:** Add details into this box relating to running the above example on your chosen cluster platform._
+> _**Note to instructors:** Add details into this box relating to running the above example on your chosen cluster platform. The example SLURM script provided here is based on the UK's ARCHER2 HPC platform, you should replace the template file in the `files` directory of the repository with a submission script suited to your platform, if one is required._
 >
 > This version of the exercise, for undertaking a parallel run of the osu_latency benchmark with your Singularity container that contains an MPI build, is specific to this run of the course.
 >
