@@ -107,7 +107,7 @@ $ singularity build /home/singularity/my_test_image.sif /home/singularity/my_tes
 Recall from the details at the start of this section that if you are running your command from the host system command line, running an instance of a Docker container for each run of the command, your command will look something like this:
 
 ~~~
-$ docker run --privileged --rm -v ${PWD}:/home/singularity quay.io/singularity/singularity:v3.5.3 build /home/singularity/my_test_image.sif /home/singularity/my_test_image.def
+$ docker run --privileged --rm -v ${PWD}:/home/singularity quay.io/singularity/singularity:v3.5.3-slim build /home/singularity/my_test_image.sif /home/singularity/my_test_image.def
 ~~~
 {: .language-bash}
 
@@ -157,8 +157,6 @@ You should now have a `my_test_image.sif` file in the current directory. Note th
 > 
 {: .callout}
 
-Now move your created `.sif` image file to a platform with an installation of Singularity. You could, for example, do this using the command line secure copy command `scp`.
-
 > ## Cluster platform configuration for running Singularity containers
 >
 > _**Note to instructors:** Add details into this box of any custom configuration that needs to be done on the cluster platform or other remote system that you're providing access to for the purpose of undertaking this course. If `singularity` does not require any custom configuration by the user on the host platform, you can remove this box._
@@ -167,7 +165,9 @@ Now move your created `.sif` image file to a platform with an installation of Si
 
 It is recommended that you move the created `.sif` file to a platform with an installation of Singularity, rather than attempting to run the image using the Docker container. However, if you do wish to try using the Docker container, see the notes below on "_Using singularity run from within the Docker container_" for further information.
 
-Now that we've built an image, we can attempt to run it:
+If you have access to a remote platform with Singularity installed on it, you should now move your created `.sif` image file to this platform. You could, for example, do this using the command line secure copy command `scp`.
+
+We can now attempt to run a container from the image that we built:
 
 ~~~
 $ singularity run my_test_image.sif
@@ -185,7 +185,7 @@ Hello World! Hello from our custom Singularity image!
 >
 > It is strongly recommended that you don't use the Docker container for running Singularity images, only for creating them, since the Singularity command runs within the container as the root user.
 > 
-> However, for the purposes of this simple example, and potentially for testing/debugging purposes it is useful to know how to run a Singularity container within the Docker Singularity container. You may recall from the [Running a container from the image](/06-singularity-images-prep/index.html#running-a-container-from-the-image) section in the previous episode that we used the `--contain` switch to singulairty. If you don't use this switch, it is likely that you will get an error relating to `/etc/localtime` similar to the following:
+> However, for the purposes of this simple example, and potentially for testing/debugging purposes it is useful to know how to run a Singularity container within the Docker Singularity container. You may recall from the [Running a container from the image](/06-singularity-images-prep/index.html#running-a-container-from-the-image) section in the previous episode that we used the `--contain` switch with the `singularity` command. If you don't use this switch, it is likely that you will get an error relating to `/etc/localtime` similar to the following:
 >
 > ~~~
 > WARNING: skipping mount of /etc/localtime: no such file or directory
@@ -201,7 +201,7 @@ Hello World! Hello from our custom Singularity image!
 > ~~~
 > {: .language-bash}
 > 
-> The `singularity run` command should now work successfully. Bear in mind that once you exit the Docker Singularity container shell and shutdown the container, this configuration will not persist.
+> The `singularity run` command should now work successfully without needing to use `--contain`. Bear in mind that once you exit the Docker Singularity container shell and shutdown the container, this configuration will not persist.
 {: .callout}
 
 
