@@ -167,6 +167,19 @@ It is recommended that you move the created `.sif` file to a platform with an in
 
 If you have access to a remote platform with Singularity installed on it, you should now move your created `.sif` image file to this platform. You could, for example, do this using the command line secure copy command `scp`.
 
+> ## Using `scp` (secure copy) to copy files between systems
+>
+> `scp` is a widely used tool that uses the SSH protocol to securely copy files between systems. As such, the syntax is similar to that of SSH.
+>
+> For example, if you want to copy the `my_image.sif` file from the current directory on your local system to your home directory (e.g. `/home/myuser/`) on a remote system (e.g. _hpc.myinstitution.ac.uk_) where an SSH private key is required for login, you would use a command similar to the following:
+>
+> ```
+> scp -i /path/to/keyfile/id_mykey ./my_image.sif myuser@hpc.myinstitution.ac.uk:/home/myuser/
+> ```
+> Note that if you leave off the `/home/myuser` and just end the command with the `:`, the file will, by default, be copied to your home directory.
+>
+{: .callout}
+
 We can now attempt to run a container from the image that we built:
 
 ~~~
