@@ -140,3 +140,28 @@ The [Singularity Docker image](https://quay.io/repository/singularity/singularit
 > >     
 > {: .solution}
 {: .challenge}
+
+> ## Optimising the Docker Singularity container command line with the `--workdir` option
+>
+> In the above exercises, we looked at how to run a Docker Singularity container and run the `singularity` command within that container.
+>
+> We saw that we bind mount the current working directory on our host system into each instance of the Docker Singularity container that we start. We can then access the files within this directory when inside the container. We can also write output to this location inside the container and then have access to the output files on our host system after the container has exited.
+>
+> Since we bind mount our current working directory `${PWD}` to the location `/home/singularity` within the container, all files from the current directory on our host system that we reference when we're inside the container appear at the location `/home/singularity`.
+>
+> When we provide file arguments to the `singularity` command, we therefore need to provide the full path to these files _within_ the running container. This means that the files are located in the `/home/singularity` directory. To avoid having to provide the full path to each file, we can using Docker's `--workdir` or `-w` option to set the default working directory within the container to `/home/singularity`. We then no longer need to prefix file names with their full path location (`/home/singularity/)` since they exist in the current working directory in the container.
+>
+> For example, with the `hello-world.sif` image in the current directory on your local system, you could run a container based on this image with:
+>
+> ```
+> docker run --rm -it --privileged -v ${PWD}:/home/singularity quay.io/singularity/singularity:v3.5.3-slim run -c /home/singularity/hello-world.sif
+> ```
+>
+> or, using the `-w` (workdir) option:
+> 
+> ```
+> docker run --rm -it --privileged -v ${PWD}:/home/singularity -w /home/singularity quay.io/singularity/singularity:v3.5.3-slim run -c hello-world.sif
+> ```
+>
+> You could also take advantage of this option by modifying your alias command shown in the section above to include `-w /home/singularity`.
+{: .callout}
