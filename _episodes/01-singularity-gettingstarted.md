@@ -9,6 +9,8 @@ objectives:
 - "Understand what Singularity is and when you might want to use it."
 - "Undertake your first run of a simple Singularity container."
 keypoints:
+- "Containers enable you to package up an application and its dependencies."
+- "By using containers, you can better enforce reproducibility, portability and share-ability of your computational workflows."
 - "Singularity is another container platform and it is often used in cluster/HPC/research environments."
 - "Singularity has a different security model to other container platforms, one of the key reasons that it is well suited to HPC and cluster environments."
 - "Singularity has its own container image format (SIF)."
@@ -42,27 +44,64 @@ Working with Singularity containers:
 
 # Singularity - Part I
 
-## What is Singularity?
+### Containers vs Virtual Machines
 
-[Singularity](https://sylabs.io/singularity/) is another container platform. In some ways it appears similar to Docker from a user perspective, but in others, particularly in the system's architecture, it is fundamentally different. These differences mean that Singularity is particularly well-suited to running on distributed, High Performance Computing (HPC) infrastructure, as well as a Linux laptop or desktop! 
+A container is an entity providing an isolated software environment (or filesystem) for an application and its dependencies.  
 
-System administrators will not, generally, install Docker on shared computing platforms such as lab desktops, research clusters or HPC platforms because the design of Docker presents potential security issues for shared platforms with multiple users. Singularity, on the other hand, can be run by end-users entirely within "user space", that is, no special administrative privileges need to be assigned to a user in order for them to run and interact with containers on a platform where Singularity has been installed.
+If you have already used a Virtual Machine, or VM, you're actually already familiar with some of the concepts of a container.
 
-## Getting started with Singularity
-Initially developed within the research community, Singularity is open source and the [repository](https://github.com/hpcng/singularity) is currently available in the "[The Next Generation of High Performance Computing](https://github.com/hpcng)" GitHub organisation. Part I of this Singularity material is intended to be undertaken on a remote platform where Singularity has been pre-installed. 
+<!-- ![Containers vs. VMs]({{ page.root }}/fig/container_vs_vm.png) -->
+<img src="{{ page.root }}/fig/container_vs_vm.png" alt="Containers vs. VMs" width="619" height="331"/>
 
-_If you're attending a taught version of this course, you will be provided with access details for a remote platform made available to you for use for Part I of the Singularity material. This platform will have the Singularity software pre-installed._
+The key difference here is that VMs virtualise **hardware** while containers virtualise **operating systems**.  There are other differences (and benefits), in particular containers are:
 
-> ## Installing Singularity on your own laptop/desktop
-> If you have a Linux system on which you have administrator access and you would like to install Singularity on this system, some information is provided at the start of [Part II of the Singularity material]({{ page.root }}/06-singularity-images-prep/index.html#installing-singularity-on-your-local-system-optional-advanced-task).
-{: .callout}
+* lighter weight to run (less CPU and memory usage, faster start-up times)
+* smaller in size (thus easier to transfer and share)
+* modular (possible to combine multiple containers that work together)
 
-Sign in to the remote platform, with Singularity installed, that you've been provided with access to. Check that the `singularity` command is available in your terminal:
+Since containers do not virtualise the hardware, containers must be built using the same architecture
+as the machine they are going to be deployed on.
+Containers built for one architecture cannot run on the other.
+
+### Containers and your workflow
+
+There are a number of reasons for using containers in your daily work:
+
+* Data reproducibility/provenance
+* Cross-system portability
+* Simplified collaboration
+* Simplified software dependencies and management
+* Consistent testing environment
+* 
+## Terminology
+
+We'll start with a brief note on the terminology used in this section of the course. We refer to both **_images_** and **_containers_**. What is the distinction between these two terms? 
+
+**_Images_** are bundles of files including an operating system, software and potentially data and other application-related files. They may sometimes be referred to as a _disk image_ or _container image_ and they may be stored in different ways, perhaps as a single file, or as a group of files. Either way, we refer to this file, or collection of files, as an image.
+
+A **_container_** is a virtual environment that is based on an image. That is, the files, applications, tools, etc that are available within a running container are determined by the image that the container is started from. It may be possible to start multiple container instances from an image. You could, perhaps, consider an image to be a form of template from which running container instances can be started.
+
+
+A **registry** is a server application where images are stored and can be accessed by users.  It can be public (*e.g.* *Docker Hub*) or private.
+
+To build an image we need a recipe.  A recipe file is called a **Definition File**, or **def file**, in the *Singularity* jargon and a **Dockerfile** in the *Docker* world.
+
+### Container engines
+
+A number of tools are available to create, deploy and run containerised applications.  Some of these will be covered throughout this tutorial:
+
+* **Docker**: the first engine to gain popularity, still widely used in the IT industry.  Not very suitable for HPC as it requires *root* privileges to run. We'll use it mostly to build container images. See the extensive [online documentation](https://docs.docker.com/) for more information.
+
+* **Singularity**: a simple, powerful *root*-less container engine for the HPC world. The main focus of this workshop. See the [user guide](https://sylabs.io/guides/latest/user-guide/) for extensive documentation.
+
+* **Apptainer**: an open-source offshoot of **Singularity**. Provides all the same functionality as **Singularity** and moving forward will likely become the open-source standard. See the [user guide](https://apptainer.org/docs/user/main/) for extensive documentation.
+
+## What is Docker
 
 > ## Loading a module
 > HPC systems often use *modules* to provide access to software on the system so you may need to use the command:
 > ~~~
-> $ module load singularity
+> $ module load Singularity
 > ~~~
 > {: .language-bash}
 > before you can use the `singularity` command on the system.
@@ -80,30 +119,14 @@ singularity version 3.5.3
 
 Depending on the version of Singularity installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
 
-## Images and containers
-
-We'll start with a brief note on the terminology used in this section of the course. We refer to both **_images_** and **_containers_**. What is the distinction between these two terms? 
-
-**_Images_** are bundles of files including an operating system, software and potentially data and other application-related files. They may sometimes be referred to as a _disk image_ or _container image_ and they may be stored in different ways, perhaps as a single file, or as a group of files. Either way, we refer to this file, or collection of files, as an image.
-
-A **_container_** is a virtual environment that is based on an image. That is, the files, applications, tools, etc that are available within a running container are determined by the image that the container is started from. It may be possible to start multiple container instances from an image. You could, perhaps, consider an image to be a form of template from which running container instances can be started.
-
 ## Getting an image and running a Singularity container
-
-If you recall from learning about Docker, Docker images are formed of a set of _layers_ that make up the complete image. When you pull a Docker image from Docker Hub, you see the different layers being downloaded to your system. They are stored in your local Docker repository on your system and you can see details of the available images using the `docker` command.
-
-Singularity images are a little different. Singularity uses the [Singularity Image Format (SIF)](https://github.com/sylabs/sif) and images are provided as single `SIF` files (with a `.sif` filename extension). Singularity images can be pulled from [Singularity Hub](https://singularity-hub.org/), a registry for container images. Singularity is also capable of running containers based on images pulled from [Docker Hub](https://hub.docker.com/) and some other sources. We'll look at accessing containers from Docker Hub later in the Singularity material.
-
-> ## Singularity Hub
-> Note that in addition to providing a repository that you can pull images from, [Singularity Hub](https://singularity-hub.org/) can also build Singularity images for you from a _**recipe**_ - a configuration file defining the steps to build an image. We'll look at recipes and building images later.
-{: .callout}
 
 Let's begin by creating a `test` directory, changing into it and _pulling_ a test _Hello World_ image from Singularity Hub:
 
 ~~~
 $ mkdir test
 $ cd test
-$ singularity pull hello-world.sif shub://vsoch/hello-world
+$ singularity pull library://sylabsed/examples/lolcow
 ~~~
 {: .language-bash}
 
@@ -113,38 +136,82 @@ INFO:    Downloading shub image
 ~~~
 {: .output}
 
-What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name `hello-world.sif` in the current directory. If you run the `ls` command, you should see that the `hello-world.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
+What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
-$ singularity run hello-world.sif
+$ singularity run lolcow_latest.sif
 ~~~
 {: .language-bash}
 
 ~~~
-RaawwWWWWWRRRR!! Avocado!
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ _________________________________________
+/ This was the most unkindest cut of all. \
+|                                         |
+\ -- William Shakespeare, "Julius Caesar" /
+ -----------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
 ~~~
 {: .output}
 
-The above command ran the _hello-world_ container from the image we downloaded from Singularity Hub and the resulting output was shown. 
+Most images are also directly executable
+~~~
+$ ./lolcow_latest.sif
+~~~
+{: .language-bash}
 
+~~~
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ _________________________________________
+/ This was the most unkindest cut of all. \
+|                                         |
+\ -- William Shakespeare, "Julius Caesar" /
+ -----------------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+~~~
+{: .output}
+
+> ## Whats with the errors?
+> This is to do with a monitoring library used on NeSI, it can be fixed by unloading the `XALT` module.
+> This can be done with the command.
+> ~~~
+> $ module unload XALT
+> ~~~
+> {: .language-bash}
+{: .callout}
 
 How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
 
 When you run a container from a Singularity image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
 
 ~~~
-$ singularity inspect -r hello-world.sif
+$ singularity inspect -r lolcow_latest.sif
 ~~~
 {: .language-bash}
 
 ~~~
-#!/bin/sh 
+#!/bin/sh
 
-exec /bin/bash /rawr.sh
-
+    fortune | cowsay | lolcat
 ~~~
 {: .output}
 
-This shows us the script within the `hello-world.sif` image configured to run by default when we use the `singularity run` command.
+This shows us the script within the `lolcow_latest.sif` image configured to run by default when we use the `singularity run` command.
 
 That concludes this introductory Singularity episode. The next episode looks in more detail at running containers.
