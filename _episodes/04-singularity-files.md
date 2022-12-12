@@ -20,7 +20,7 @@ In this episode we'll look at working with files in the context of Singularity c
 
 ## Users within a Singularity container
 
-The first thing to note is that when you ran `whoami` within the container shell you started at the end of the previous episode, you should have seen the username that you were signed in as on the host system when you ran the container. 
+The first thing to note is that when you ran `whoami` within the container shell you started at the end of the previous episode, you should have seen the username that you were signed in as on the host system when you ran the container.
 
 For example, if my username were `jc1000`, I'd expect to see the following:
 
@@ -29,6 +29,7 @@ $ singularity shell lolcow_latest.sif
 Singularity> whoami
 jc1000
 ~~~
+
 {: .language-bash}
 
 But hang on! I downloaded the standard, public version of the `lolcow_latest.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
@@ -65,16 +66,17 @@ Host system:                                                      Singularity co
 └── ...                                                           └── ...
 
 ~~~
+
 {: .output}
 
 > ## Questions and exercises: Files in Singularity containers
 >
 > **Q1:** What do you notice about the ownership of files in a container started from the hello-world image? (e.g. take a look at the ownership of files in the root directory (`/`))
-> 
+>
 > **Exercise 1:** In this container, try editing (for example using the editor `vi` which should be avaiable in the container) the `/rawr.sh` file. What do you notice?
 >
 > _If you're not familiar with `vi` there are many quick reference pages online showing the main commands for using the editor, for example [this one](http://web.mit.edu/merolish/Public/vi-ref.pdf)._
-> 
+>
 > **Exercise 2:** In your home directory within the container shell, try and create a simple text file. Is it possible to do this? If so, why? If not, why not?! If you can successfully create a file, what happens to it when you exit the shell and the container shuts down?
 >
 > > ## Answers
@@ -82,7 +84,7 @@ Host system:                                                      Singularity co
 > > **A1:** Use the `ls -l` command to see a detailed file listing including file ownership and permission details. You should see that most of the files in the `/` directory are owned by `root`, as you'd probably expect on any Linux system. If you look at the files in your home directory, they should be owned by you.
 > >
 > > **A Ex1:** We've already seen from the previous answer that the files in `/` are owned by `root` so we wouldn't expect to be able to edit them if we're not the root user. However, if you tried to edit `/rawr.sh` you probably saw that the file was read only and, if you tried for example to delete the file you would have seen an error similar to the following: `cannot remove '/rawr.sh': Read-only file system`. This tells us something else about the filesystem. It's not just that we don't have permission to delete the file, the filesystem itself is read-only so even the `root` user wouldn't be able to edit/delete this file. We'll look at this in more detail shortly.
-> > 
+> >
 > > **A Ex2:** Within your home directory, you _should_ be able to successfully create a file. Since you're seeing your home directory on the host system which has been bound into the container, when you exit and the container shuts down, the file that you created within the container should still be present when you look at your home directory on the host system.
 > {: .solution}
 {: .challenge}
@@ -100,15 +102,18 @@ The `-B` option to the `singularity` command is used to specify additonal binds.
 $ singularity shell -B /work/z19/shared lolcow_latest.sif
 Singularity> ls /work/z19/shared
 ```
+
 {: .language-bash}
+
 ```
-CP2K-regtest	    cube	     eleanor		   image256x192.pgm		kevin		    pblas			    q-e-qe-6.7 
-ebe		    evince.simg	     image512x384.pgm	   low_priority.slurm           pblas.tar.gz	                                    q-qe
-Q1529568	    edge192x128.pgm  extrae		   image768x1152.pgm		mkdir		    petsc			    regtest-ls-rtp_forCray
-adrianj		    edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm		moose.job	    petsc-hypre			    udunits-2.2.28.tar.gz
-antlr-2.7.7.tar.gz  edge512x384.pgm  hj			   job-defmpi-cpe-21.03-robust	mrb4cab		    petsc-hypre-cpe21.03	    xios-2.5
-cdo-archer2.sif     edge768x768.pgm  image192x128.pgm	   jsindt			paraver		    petsc-hypre-cpe21.03-gcc10.2.0
+CP2K-regtest     cube      eleanor     image256x192.pgm  kevin      pblas       q-e-qe-6.7 
+ebe      evince.simg      image512x384.pgm    low_priority.slurm           pblas.tar.gz                                     q-qe
+Q1529568     edge192x128.pgm  extrae     image768x1152.pgm  mkdir      petsc       regtest-ls-rtp_forCray
+adrianj      edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm  moose.job     petsc-hypre       udunits-2.2.28.tar.gz
+antlr-2.7.7.tar.gz  edge512x384.pgm  hj      job-defmpi-cpe-21.03-robust mrb4cab      petsc-hypre-cpe21.03     xios-2.5
+cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      petsc-hypre-cpe21.03-gcc10.2.0
 ```
+
 {: .output}
 
 Note that, by default, a bind is mounted at the same path in the container as on the host system. You can also specify where a host directory is mounted in the container by separating the host path from the container path by a colon (`:`) in the option:
@@ -117,15 +122,18 @@ Note that, by default, a bind is mounted at the same path in the container as on
 $ singularity shell -B /work/z19/shared:/shared-data lolcow_latest.sif
 Singularity> ls /shared-data
 ```
+
 {: .language-bash}
+
 ```
-CP2K-regtest	    cube	     eleanor		   image256x192.pgm		kevin		    pblas			    q-e-qe-6.7 
-ebe		    evince.simg	     image512x384.pgm	   low_priority.slurm           pblas.tar.gz	                                    q-qe
-Q1529568	    edge192x128.pgm  extrae		   image768x1152.pgm		mkdir		    petsc			    regtest-ls-rtp_forCray
-adrianj		    edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm		moose.job	    petsc-hypre			    udunits-2.2.28.tar.gz
-antlr-2.7.7.tar.gz  edge512x384.pgm  hj			   job-defmpi-cpe-21.03-robust	mrb4cab		    petsc-hypre-cpe21.03	    xios-2.5
-cdo-archer2.sif     edge768x768.pgm  image192x128.pgm	   jsindt			paraver		    petsc-hypre-cpe21.03-gcc10.2.0
+CP2K-regtest     cube      eleanor     image256x192.pgm  kevin      pblas       q-e-qe-6.7 
+ebe      evince.simg      image512x384.pgm    low_priority.slurm           pblas.tar.gz                                     q-qe
+Q1529568     edge192x128.pgm  extrae     image768x1152.pgm  mkdir      petsc       regtest-ls-rtp_forCray
+adrianj      edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm  moose.job     petsc-hypre       udunits-2.2.28.tar.gz
+antlr-2.7.7.tar.gz  edge512x384.pgm  hj      job-defmpi-cpe-21.03-robust mrb4cab      petsc-hypre-cpe21.03     xios-2.5
+cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      petsc-hypre-cpe21.03-gcc10.2.0
 ```
+
 {: .output}
 
 You can also specify multiple binds to `-B` by separating them by commas (`,`).
@@ -144,40 +152,46 @@ using the same name and path: `-B hostdir`.
 Let's use the latter syntax to mount `$TUTO` into the container and re-run `ls`.
 
 ```bash
-$ singularity exec -B $TUTO docker://ubuntu:18.04 ls -Fh $TUTO/assets
+singularity exec -B $TUTO docker://ubuntu:18.04 ls -Fh $TUTO/assets
 ```
+
 {: .source}
 
 ```
 css/   fonts/ img/   js/
 ```
+
 {: .output}
 
 Also, we can write files in a host dir which has been bind mounted in the container:
 
 ```bash
-$ singularity exec -B $TUTO docker://ubuntu:18.04 touch $TUTO/my_example_file
-$ ls my_example_file
+singularity exec -B $TUTO docker://ubuntu:18.04 touch $TUTO/my_example_file
+ls my_example_file
 ```
+
 {: .source}
 
 ```
 my_example_file
 ```
+
 {: .output}
 
-If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, *i.e.*
+If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
 
 ```bash
 singularity -B dir1,dir2,dir3 ...
 ```
+
 {: .source}
 
 Equivalently, directories to be bind mounted can be specified using the environment variable `SINGULARITY_BINDPATH`:
 
 ```bash
-$ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
+export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 ```
+
 {: .source}
 
 > ## Mounting `$HOME`
@@ -187,11 +201,12 @@ $ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 > We do recommend that you **avoid mounting home** whenever possible, to avoid
 > sharing potentially sensitive data, such as SSH keys, with the container, especially if exposing it to the public through a web service.
 >
-> If you need to share data inside the container home, you might just mount that specific file/directory, *e.g.*
+> If you need to share data inside the container home, you might just mount that specific file/directory, _e.g._
 >
 > ```bash
 > -B $HOME/.local
 > ```
+>
 > {: .source}
 >
 > Or, if you want a full fledged home, you might define an alternative host directory to act as your container home, as in
@@ -199,6 +214,7 @@ $ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 > ```bash
 > -B /path/to/fake/home:$HOME
 > ```
+>
 > {: .source}
 >
 > Finally, you should also **avoid running a container from your host home**,
@@ -210,28 +226,32 @@ otherwise this will be bind mounted as it is the current working directory.
 By default, shell variables are inherited in the container from the host:
 
 ```bash
-$ export HELLO=world
-$ singularity exec docker://ubuntu:18.04 bash -c 'echo $HELLO'
+export HELLO=world
+singularity exec docker://ubuntu:18.04 bash -c 'echo $HELLO'
 ```
+
 {: .source}
 
 ```
 world
 ```
+
 {: .output}
 
 There might be situations where you want to isolate the shell environment of the container; to this end you can use the flag `-C`, or `--containall`:  
 (Note that this will also isolate system directories such as `/tmp`, `/dev` and `/run`)
 
 ```bash
-$ export HELLO=world
-$ singularity exec -C docker://ubuntu:18.04 bash -c 'echo $HELLO'
+export HELLO=world
+singularity exec -C docker://ubuntu:18.04 bash -c 'echo $HELLO'
 ```
+
 {: .source}
 
 ```
 
 ```
+
 {: .output}
 
 If you need to pass only specific variables to the container, that might or might
@@ -239,26 +259,30 @@ not be defined in the host, you can define variables that start with `SINGULARIT
 this prefix will be automatically trimmed in the container:
 
 ```bash
-$ export SINGULARITYENV_CIAO=mondo
-$ singularity exec -C docker://ubuntu:18.04 bash -c 'echo $CIAO'
+export SINGULARITYENV_CIAO=mondo
+singularity exec -C docker://ubuntu:18.04 bash -c 'echo $CIAO'
 ```
+
 {: .source}
 
 ```
 mondo
 ```
+
 {: .output}
 
 An alternative way to define variables is to use the flag `--env`:
 
 ```bash
-$ singularity exec --env CIAO=mondo docker://ubuntu:18.04 bash -c 'echo $CIAO'
+singularity exec --env CIAO=mondo docker://ubuntu:18.04 bash -c 'echo $CIAO'
 ```
+
 {: .source}
 
 ```
 mondo
 ```
+
 {: .output}
 
 ## References

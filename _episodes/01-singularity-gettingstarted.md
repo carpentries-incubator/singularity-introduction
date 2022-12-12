@@ -153,12 +153,7 @@ singularity run lolcow_latest.sif
 {: .language-bash}
 
 ~~~
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
- _________________________________________
+_____________________________
 / This was the most unkindest cut of all. \
 |                                         |
 \ -- William Shakespeare, "Julius Caesar" /
@@ -181,11 +176,6 @@ Most images are also directly executable
 {: .language-bash}
 
 ~~~
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
  _________________________________________
 / This was the most unkindest cut of all. \
 |                                         |
