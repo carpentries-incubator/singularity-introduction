@@ -20,8 +20,8 @@ While Singularity doesn't have a local image repository in the same way as Docke
 If you delete a local `.sif` image that you have pulled from a remote image repository and then pull it again, if the image is unchanged from the version you previously pulled, you will be given a copy of the image file from your local cache rather than the image being downloaded again from the remote source. This removes unnecessary network transfers and is particularly useful for large images which may take some time to transfer over the network. To demonstrate this, remove the `hello-world.sif` file stored in your `test` directory and then issue the `pull` command again:
 
 ~~~
-$ rm hello-world.sif
-$ singularity pull hello-world.sif shub://vsoch/hello-world
+$ rm lolcow_latest.sif
+$ singularity pull library://sylabsed/examples/lolcow
 ~~~
 {: .language-bash}
 
@@ -54,7 +54,7 @@ $ singularity cache list -v
 
 ~~~
 NAME                     DATE CREATED           SIZE             TYPE
-hello-world_latest.sif   2020-04-03 13:20:44    62.65 MB         shub
+lolcow_latest.sif   2020-04-03 13:20:44    62.65 MB         shub
 
 There are 1 container file(s) using 62.65 MB and 0 oci blob file(s) using 0.00 kB of space
 Total space used: 62.65 MB
