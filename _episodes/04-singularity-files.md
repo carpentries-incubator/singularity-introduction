@@ -25,13 +25,13 @@ The first thing to note is that when you ran `whoami` within the container shell
 For example, if my username were `jc1000`, I'd expect to see the following:
 
 ~~~
-$ singularity shell hello-world.sif
+$ singularity shell lolcow_latest.sif
 Singularity> whoami
 jc1000
 ~~~
 {: .language-bash}
 
-But hang on! I downloaded the standard, public version of the `hello-world.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
+But hang on! I downloaded the standard, public version of the `lolcow_latest.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
 
 If you have any familiarity with Linux system administration, you may be aware that in Linux, users and their Unix groups are configured in the `/etc/passwd` and `/etc/group` files respectively. In order for the shell within the container to know of my user, the relevant user information needs to be available within these files within the container.
 
@@ -97,7 +97,7 @@ You will sometimes need to bind additional host system directories into a contai
 The `-B` option to the `singularity` command is used to specify additonal binds. For example, to bind the `/work/z19/shared` directory into a container you could use (note this directory is unlikely to exist on the host system you are using so you'll need to test this using a different directory):
 
 ```
-$ singularity shell -B /work/z19/shared hello-world.sif
+$ singularity shell -B /work/z19/shared lolcow_latest.sif
 Singularity> ls /work/z19/shared
 ```
 {: .language-bash}
@@ -114,7 +114,7 @@ cdo-archer2.sif     edge768x768.pgm  image192x128.pgm	   jsindt			paraver		    p
 Note that, by default, a bind is mounted at the same path in the container as on the host system. You can also specify where a host directory is mounted in the container by separating the host path from the container path by a colon (`:`) in the option:
 
 ```
-$ singularity shell -B /work/z19/shared:/shared-data hello-world.sif
+$ singularity shell -B /work/z19/shared:/shared-data lolcow_latest.sif
 Singularity> ls /shared-data
 ```
 {: .language-bash}
@@ -131,6 +131,135 @@ cdo-archer2.sif     edge768x768.pgm  image192x128.pgm	   jsindt			paraver		    p
 You can also specify multiple binds to `-B` by separating them by commas (`,`).
 
 You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building Singularity containers.
+
+### Bind mounting host directories
+
+Singularity has the runtime flag `--bind`, `-B` in short, to mount host directories.
+
+There is a long syntax, which allows to map the host dir onto a container dir with
+a different name/path, `-B hostdir:containerdir`.  
+There is also a short syntax, that just mounts the dir
+using the same name and path: `-B hostdir`.
+
+Let's use the latter syntax to mount `$TUTO` into the container and re-run `ls`.
+
+```bash
+$ singularity exec -B $TUTO docker://ubuntu:18.04 ls -Fh $TUTO/assets
+```
+{: .source}
+
+```
+css/   fonts/ img/   js/
+```
+{: .output}
+
+Also, we can write files in a host dir which has been bind mounted in the container:
+
+```bash
+$ singularity exec -B $TUTO docker://ubuntu:18.04 touch $TUTO/my_example_file
+$ ls my_example_file
+```
+{: .source}
+
+```
+my_example_file
+```
+{: .output}
+
+If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, *i.e.*
+
+```bash
+singularity -B dir1,dir2,dir3 ...
+```
+{: .source}
+
+Equivalently, directories to be bind mounted can be specified using the environment variable `SINGULARITY_BINDPATH`:
+
+```bash
+$ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
+```
+{: .source}
+
+> ## Mounting `$HOME`
+>
+> Depending on the site configuration of Singularity, user home directories might
+> or might not be mounted into containers by default.  
+> We do recommend that you **avoid mounting home** whenever possible, to avoid
+> sharing potentially sensitive data, such as SSH keys, with the container, especially if exposing it to the public through a web service.
+>
+> If you need to share data inside the container home, you might just mount that specific file/directory, *e.g.*
+>
+> ```bash
+> -B $HOME/.local
+> ```
+> {: .source}
+>
+> Or, if you want a full fledged home, you might define an alternative host directory to act as your container home, as in
+>
+> ```bash
+> -B /path/to/fake/home:$HOME
+> ```
+> {: .source}
+>
+> Finally, you should also **avoid running a container from your host home**,
+otherwise this will be bind mounted as it is the current working directory.
+{: .callout}
+
+### How about sharing environment variables with the host?
+
+By default, shell variables are inherited in the container from the host:
+
+```bash
+$ export HELLO=world
+$ singularity exec docker://ubuntu:18.04 bash -c 'echo $HELLO'
+```
+{: .source}
+
+```
+world
+```
+{: .output}
+
+There might be situations where you want to isolate the shell environment of the container; to this end you can use the flag `-C`, or `--containall`:  
+(Note that this will also isolate system directories such as `/tmp`, `/dev` and `/run`)
+
+```bash
+$ export HELLO=world
+$ singularity exec -C docker://ubuntu:18.04 bash -c 'echo $HELLO'
+```
+{: .source}
+
+```
+
+```
+{: .output}
+
+If you need to pass only specific variables to the container, that might or might
+not be defined in the host, you can define variables that start with `SINGULARITYENV_`;
+this prefix will be automatically trimmed in the container:
+
+```bash
+$ export SINGULARITYENV_CIAO=mondo
+$ singularity exec -C docker://ubuntu:18.04 bash -c 'echo $CIAO'
+```
+{: .source}
+
+```
+mondo
+```
+{: .output}
+
+An alternative way to define variables is to use the flag `--env`:
+
+```bash
+$ singularity exec --env CIAO=mondo docker://ubuntu:18.04 bash -c 'echo $CIAO'
+```
+{: .source}
+
+```
+mondo
+```
+{: .output}
 
 ## References
 

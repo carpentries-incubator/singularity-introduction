@@ -17,7 +17,7 @@ keypoints:
 
 We saw earlier that we can use the `singularity inspect` command to see the run script that a container is configured to run by default. What if we want to run a different command within a container?
 
-If we know the path of an executable that we want to run within a container, we can use the `singularity exec` command. For example, using the `hello-world.sif` container that we've already pulled from Singularity Hub, we can run the following within the `test` directory where the `lolcow_latest.sif` file is located:
+If we know the path of an executable that we want to run within a container, we can use the `singularity exec` command. For example, using the `lolcow_latest.sif` container that we've already pulled from Singularity Hub, we can run the following within the `test` directory where the `lolcow_latest.sif` file is located:
 
 ~~~
 $ singularity exec lolcow_latest.sif echo Hello World!
@@ -85,7 +85,7 @@ $ singularity shell lolcow_latest.sif
 Singularity> whoami
 [<your username>]
 Singularity> ls
-hello-world.sif
+lolcow_latest.sif
 Singularity> 
 ~~~
 {: .output}

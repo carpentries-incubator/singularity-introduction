@@ -22,8 +22,9 @@ The episodes in this lesson will introduce you to the [Singularity](https://syla
 This material is split into 2 parts:
 
 *Part I: Basic usage, working with images*
+
  1. **Singularity: Getting started**: This introductory episode
-    
+
 Working with Singularity containers:
 <ol start="2">
  <li><strong>The singularity cache: </strong> Why, where and how does Singularity cache images locally?</li>
@@ -38,7 +39,8 @@ Working with Singularity containers:
    <li><strong>Running MPI parallel jobs using Singularity containers</strong>: Explaining how to run MPI parallel codes from within Singularity containers.</li>
 </ol>
 
-> ## Work in progress...
+> ## Work in progress
+
 > This lesson is new material that is under ongoing development. We will introduce Singularity and demonstrate how to work with it. As the tools and best practices continue to develop, elements of this material are likely to evolve. We welcome any comments or suggestions on how the material can be improved or extended.
 {: .callout}
 
@@ -72,15 +74,14 @@ There are a number of reasons for using containers in your daily work:
 * Simplified collaboration
 * Simplified software dependencies and management
 * Consistent testing environment
-* 
+
 ## Terminology
 
-We'll start with a brief note on the terminology used in this section of the course. We refer to both **_images_** and **_containers_**. What is the distinction between these two terms? 
+We'll start with a brief note on the terminology used in this section of the course. We refer to both ***images*** and ***containers***. What is the distinction between these two terms?
 
-**_Images_** are bundles of files including an operating system, software and potentially data and other application-related files. They may sometimes be referred to as a _disk image_ or _container image_ and they may be stored in different ways, perhaps as a single file, or as a group of files. Either way, we refer to this file, or collection of files, as an image.
+***Images*** are bundles of files including an operating system, software and potentially data and other application-related files. They may sometimes be referred to as a *disk image* or *container image* and they may be stored in different ways, perhaps as a single file, or as a group of files. Either way, we refer to this file, or collection of files, as an image.
 
-A **_container_** is a virtual environment that is based on an image. That is, the files, applications, tools, etc that are available within a running container are determined by the image that the container is started from. It may be possible to start multiple container instances from an image. You could, perhaps, consider an image to be a form of template from which running container instances can be started.
-
+A ***container*** is a virtual environment that is based on an image. That is, the files, applications, tools, etc that are available within a running container are determined by the image that the container is started from. It may be possible to start multiple container instances from an image. You could, perhaps, consider an image to be a form of template from which running container instances can be started.
 
 A **registry** is a server application where images are stored and can be accessed by users.  It can be public (*e.g.* *Docker Hub*) or private.
 
@@ -99,48 +100,56 @@ A number of tools are available to create, deploy and run containerised applicat
 ## What is Docker
 
 > ## Loading a module
+
 > HPC systems often use *modules* to provide access to software on the system so you may need to use the command:
+>
 > ~~~
 > $ module load Singularity
 > ~~~
+>
 > {: .language-bash}
 > before you can use the `singularity` command on the system.
 {: .callout}
 
 ~~~
-$ singularity --version
+singularity --version
 ~~~
+
 {: .language-bash}
 
 ~~~
 singularity version 3.5.3
 ~~~
+
 {: .output}
 
 Depending on the version of Singularity installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
 
 ## Getting an image and running a Singularity container
 
-Let's begin by creating a `test` directory, changing into it and _pulling_ a test _Hello World_ image from Singularity Hub:
+Let's begin by creating a `test` directory, changing into it and *pulling* a test *Hello World* image from Singularity Hub:
 
 ~~~
-$ mkdir test
-$ cd test
-$ singularity pull library://sylabsed/examples/lolcow
+mkdir test
+cd test
+singularity pull library://sylabsed/examples/lolcow
 ~~~
+
 {: .language-bash}
 
 ~~~
 INFO:    Downloading shub image
  59.75 MiB / 59.75 MiB [===============================================================================================================] 100.00% 52.03 MiB/s 1s
 ~~~
+
 {: .output}
 
 What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
-$ singularity run lolcow_latest.sif
+singularity run lolcow_latest.sif
 ~~~
+
 {: .language-bash}
 
 ~~~
@@ -160,12 +169,15 @@ ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_ini
                 ||----w |
                 ||     ||
 ~~~
+
 {: .output}
 
 Most images are also directly executable
+
 ~~~
-$ ./lolcow_latest.sif
+./lolcow_latest.sif
 ~~~
+
 {: .language-bash}
 
 ~~~
@@ -185,14 +197,18 @@ ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_ini
                 ||----w |
                 ||     ||
 ~~~
+
 {: .output}
 
 > ## Whats with the errors?
+
 > This is to do with a monitoring library used on NeSI, it can be fixed by unloading the `XALT` module.
 > This can be done with the command.
+>
 > ~~~
 > $ module unload XALT
 > ~~~
+>
 > {: .language-bash}
 {: .callout}
 
@@ -201,8 +217,9 @@ How did the container determine what to do when we ran it?! What did running the
 When you run a container from a Singularity image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
 
 ~~~
-$ singularity inspect -r lolcow_latest.sif
+singularity inspect -r lolcow_latest.sif
 ~~~
+
 {: .language-bash}
 
 ~~~
@@ -210,6 +227,7 @@ $ singularity inspect -r lolcow_latest.sif
 
     fortune | cowsay | lolcat
 ~~~
+
 {: .output}
 
 This shows us the script within the `lolcow_latest.sif` image configured to run by default when we use the `singularity run` command.
