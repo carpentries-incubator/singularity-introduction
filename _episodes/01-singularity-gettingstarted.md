@@ -127,11 +127,18 @@ Depending on the version of Singularity installed on your system, you may see a 
 
 ## Getting an image and running a Singularity container
 
-Let's begin by creating a `test` directory, changing into it and *pulling* a test *Hello World* image from Singularity Hub:
+We will be working from the training project directory `/nesi/project/nesi99991/singularity_ernzz2023`.
+
+```
+cd /nesi/project/nesi99991/singularity_ernzz2023
+```
+
+
+Let's begin by creating a directory with *your username*, changing into it and *pulling* a test *Hello World* image from Singularity Hub:
 
 ~~~
-mkdir test
-cd test
+mkdir test usrname123
+cd usrname123
 singularity pull library://sylabsed/examples/lolcow
 ~~~
 
@@ -153,6 +160,11 @@ singularity run lolcow_latest.sif
 {: .language-bash}
 
 ~~~
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
 _____________________________
 / This was the most unkindest cut of all. \
 |                                         |
@@ -176,6 +188,11 @@ Most images are also directly executable
 {: .language-bash}
 
 ~~~
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
  _________________________________________
 / This was the most unkindest cut of all. \
 |                                         |
@@ -193,6 +210,18 @@ Most images are also directly executable
 How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
 
 When you run a container from a Singularity image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
+
+> ## Whats with the errors?
+
+> This is to do with a monitoring library used on NeSI, it can be fixed by unloading the `XALT` module.
+> This can be done with the command.
+>
+> ~~~
+> $ module unload XALT
+> ~~~
+>
+> {: .language-bash}
+{: .callout}
 
 ~~~
 singularity inspect -r lolcow_latest.sif
