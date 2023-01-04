@@ -66,26 +66,50 @@ Host system:                                                      Singularity co
 └── ...                                                           └── ...
 
 ~~~
-
 {: .output}
 
-> ## Questions and exercises: Files in Singularity containers
+> ## Files in Singularity containers
 >
-> **Q1:** What do you notice about the ownership of files in a container started from the hello-world image? (e.g. take a look at the ownership of files in the root directory (`/`))
+> Now lets have a look at the permissions inside the containers root directory with the command
 >
-> **Exercise 1:** In this container, try editing (for example using the editor `vi` which should be avaiable in the container) the `/rawr.sh` file. What do you notice?
+> ~~~
+> ls -l /
+> ~~~
+> {: .language-bash}
+> 
+> We see (most) of the directories here are owned by `root` so we would not expect to be able to create files here, same as on the host
+> system. Lets try anyway,
 >
-> _If you're not familiar with `vi` there are many quick reference pages online showing the main commands for using the editor, for example [this one](http://web.mit.edu/merolish/Public/vi-ref.pdf)._
+> ```
+> ```
+> {: .language-bash}
 >
-> **Exercise 2:** In your home directory within the container shell, try and create a simple text file. Is it possible to do this? If so, why? If not, why not?! If you can successfully create a file, what happens to it when you exit the shell and the container shuts down?
+> ```
+> touch: cannot touch '/bin/somefile': Read-only file system
+> ```
+> {: .output}
 >
-> > ## Answers
+> 1. Try to create a file in the root directory, `touch /bin/somefile`. Is that what you expected would happen?
+>
+> 2. In in your home directory, run the same command `touch ~/somefile`. Why does it work here? What happens to it when you exit the 
+> container?
+>
+> 3. Some of the files in the root directory are owned by you. Why might this be?
+>
+> 4. Why are we using `touch` to create files. What happens when you try to run `nano`?
+>
+> > ## Solution
 > >
-> > **A1:** Use the `ls -l` command to see a detailed file listing including file ownership and permission details. You should see that most of the files in the `/` directory are owned by `root`, as you'd probably expect on any Linux system. If you look at the files in your home directory, they should be owned by you.
+> > 1. We will have received the error `touch: cannot touch '/bin/somefile': Read-only file system`.
+> > This tells us something else about the filesystem. It's not just that we don't have permission to delete the file, the filesystem
+> > itself is read-only so even the `root` user wouldn't be able to edit/delete this file.
 > >
-> > **A Ex1:** We've already seen from the previous answer that the files in `/` are owned by `root` so we wouldn't expect to be able to edit them if we're not the root user. However, if you tried to edit `/rawr.sh` you probably saw that the file was read only and, if you tried for example to delete the file you would have seen an error similar to the following: `cannot remove '/rawr.sh': Read-only file system`. This tells us something else about the filesystem. It's not just that we don't have permission to delete the file, the filesystem itself is read-only so even the `root` user wouldn't be able to edit/delete this file. We'll look at this in more detail shortly.
+> > 2. Within your home directory, you _should_ be able to successfully create a file. Since you're seeing your home directory on the host system which has been bound into the container, when you exit and the container shuts down, the file that you created within the container should still be present when you look at your home directory on the host system.
 > >
-> > **A Ex2:** Within your home directory, you _should_ be able to successfully create a file. Since you're seeing your home directory on the host system which has been bound into the container, when you exit and the container shuts down, the file that you created within the container should still be present when you look at your home directory on the host system.
+> > 3. Elaborate on other default binds? `/etc/groups` etc.?
+> >
+> > 4. If you try to run the command `nano` you will get the error `bash: nano: command not found`. This is because nano is not
+> > installed in the container, the `touch` command however is a core util so will almost always be available.
 > {: .solution}
 {: .challenge}
 
@@ -96,7 +120,7 @@ You will sometimes need to bind additional host system directories into a contai
 - There may be a shared dataset in a shard location that you need access to in the container
 - You may require executables and software libraries in the container
 
-The `-B` option to the `singularity` command is used to specify additonal binds. For example, to bind the `/work/z19/shared` directory into a container you could use (note this directory is unlikely to exist on the host system you are using so you'll need to test this using a different directory):
+The `-B` or `--bind` option to the `singularity` command is used to specify additonal binds. For example, to bind the `/work/z19/shared` directory into a container you could use (note this directory is unlikely to exist on the host system you are using so you'll need to test this using a different directory):
 
 ```
 $ singularity shell -B /work/z19/shared lolcow_latest.sif
@@ -136,23 +160,16 @@ cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      p
 
 {: .output}
 
-You can also specify multiple binds to `-B` by separating them by commas (`,`).
+If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
+
+```bash
+singularity -B dir1,dir2,dir3 ...
+```
 
 You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building Singularity containers.
 
-### Bind mounting host directories
-
-Singularity has the runtime flag `--bind`, `-B` in short, to mount host directories.
-
-There is a long syntax, which allows to map the host dir onto a container dir with
-a different name/path, `-B hostdir:containerdir`.  
-There is also a short syntax, that just mounts the dir
-using the same name and path: `-B hostdir`.
-
-Let's use the latter syntax to mount `$TUTO` into the container and re-run `ls`.
-
 ```bash
-singularity exec -B $TUTO docker://ubuntu:18.04 ls -Fh $TUTO/assets
+singularity exec -B $TUTO lolcow_latest.sif ls -Fh $TUTO/assets
 ```
 
 {: .source}
@@ -166,7 +183,7 @@ css/   fonts/ img/   js/
 Also, we can write files in a host dir which has been bind mounted in the container:
 
 ```bash
-singularity exec -B $TUTO docker://ubuntu:18.04 touch $TUTO/my_example_file
+singularity exec -B $TUTO lolcow_latest.sif touch $TUTO/my_example_file
 ls my_example_file
 ```
 
@@ -178,11 +195,6 @@ my_example_file
 
 {: .output}
 
-If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
-
-```bash
-singularity -B dir1,dir2,dir3 ...
-```
 
 {: .source}
 
@@ -227,7 +239,7 @@ By default, shell variables are inherited in the container from the host:
 
 ```bash
 export HELLO=world
-singularity exec docker://ubuntu:18.04 bash -c 'echo $HELLO'
+singularity exec lolcow_latest.sif bash -c 'echo $HELLO'
 ```
 
 {: .source}
@@ -243,7 +255,7 @@ There might be situations where you want to isolate the shell environment of the
 
 ```bash
 export HELLO=world
-singularity exec -C docker://ubuntu:18.04 bash -c 'echo $HELLO'
+singularity exec -C lolcow_latest.sif bash -c 'echo $HELLO'
 ```
 
 {: .source}
@@ -260,7 +272,7 @@ this prefix will be automatically trimmed in the container:
 
 ```bash
 export SINGULARITYENV_CIAO=mondo
-singularity exec -C docker://ubuntu:18.04 bash -c 'echo $CIAO'
+singularity exec -C lolcow_latest.sif bash -c 'echo $CIAO'
 ```
 
 {: .source}
@@ -274,7 +286,7 @@ mondo
 An alternative way to define variables is to use the flag `--env`:
 
 ```bash
-singularity exec --env CIAO=mondo docker://ubuntu:18.04 bash -c 'echo $CIAO'
+singularity exec --env CIAO=mondo lolcow_latest.sif bash -c 'echo $CIAO'
 ```
 
 {: .source}
