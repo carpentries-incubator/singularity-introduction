@@ -120,22 +120,17 @@ You will sometimes need to bind additional host system directories into a contai
 - There may be a shared dataset in a shard location that you need access to in the container
 - You may require executables and software libraries in the container
 
-The `-B` or `--bind` option to the `singularity` command is used to specify additonal binds. For example, to bind the `/work/z19/shared` directory into a container you could use (note this directory is unlikely to exist on the host system you are using so you'll need to test this using a different directory):
+The `-B` or `--bind` option to the `singularity` command is used to specify additonal binds. Lets try binding the `/nesi/project/nesi99991/ernz2023/shared` directory.
 
 ```
-$ singularity shell -B /work/z19/shared lolcow_latest.sif
-Singularity> ls /work/z19/shared
+$ singularity shell -B /nesi/project/nesi99991/ernz2023/shared lolcow_latest.sif
+Singularity> ls /nesi/project/nesi99991/ernz2023/shared
 ```
 
 {: .language-bash}
 
 ```
-CP2K-regtest     cube      eleanor     image256x192.pgm  kevin      pblas       q-e-qe-6.7 
-ebe      evince.simg      image512x384.pgm    low_priority.slurm           pblas.tar.gz                                     q-qe
-Q1529568     edge192x128.pgm  extrae     image768x1152.pgm  mkdir      petsc       regtest-ls-rtp_forCray
-adrianj      edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm  moose.job     petsc-hypre       udunits-2.2.28.tar.gz
-antlr-2.7.7.tar.gz  edge512x384.pgm  hj      job-defmpi-cpe-21.03-robust mrb4cab      petsc-hypre-cpe21.03     xios-2.5
-cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      petsc-hypre-cpe21.03-gcc10.2.0
+some stuff in here
 ```
 
 {: .output}
@@ -143,19 +138,14 @@ cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      p
 Note that, by default, a bind is mounted at the same path in the container as on the host system. You can also specify where a host directory is mounted in the container by separating the host path from the container path by a colon (`:`) in the option:
 
 ```
-$ singularity shell -B /work/z19/shared:/shared-data lolcow_latest.sif
-Singularity> ls /shared-data
+$ singularity shell -B /nesi/project/nesi99991/ernz2023/shared:/shared lolcow_latest.sif
+Singularity> ls /shared
 ```
 
 {: .language-bash}
 
 ```
-CP2K-regtest     cube      eleanor     image256x192.pgm  kevin      pblas       q-e-qe-6.7 
-ebe      evince.simg      image512x384.pgm    low_priority.slurm           pblas.tar.gz                                     q-qe
-Q1529568     edge192x128.pgm  extrae     image768x1152.pgm  mkdir      petsc       regtest-ls-rtp_forCray
-adrianj      edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm  moose.job     petsc-hypre       udunits-2.2.28.tar.gz
-antlr-2.7.7.tar.gz  edge512x384.pgm  hj      job-defmpi-cpe-21.03-robust mrb4cab      petsc-hypre-cpe21.03     xios-2.5
-cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      petsc-hypre-cpe21.03-gcc10.2.0
+some stuff in here
 ```
 
 {: .output}
@@ -166,7 +156,7 @@ If you need to mount multiple directories, you can either repeat the `-B` flag m
 singularity -B dir1,dir2,dir3 ...
 ```
 
-You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building Singularity containers.
+<!-- You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building Singularity containers.
 
 ```bash
 singularity exec -B $TUTO lolcow_latest.sif ls -Fh $TUTO/assets
@@ -178,9 +168,9 @@ singularity exec -B $TUTO lolcow_latest.sif ls -Fh $TUTO/assets
 css/   fonts/ img/   js/
 ```
 
-{: .output}
+{: .output} -->
 
-Also, we can write files in a host dir which has been bind mounted in the container:
+<!-- Also, we can write files in a host dir which has been bind mounted in the container:
 
 ```bash
 singularity exec -B $TUTO lolcow_latest.sif touch $TUTO/my_example_file
@@ -196,7 +186,7 @@ my_example_file
 {: .output}
 
 
-{: .source}
+{: .source} -->
 
 Equivalently, directories to be bind mounted can be specified using the environment variable `SINGULARITY_BINDPATH`:
 
