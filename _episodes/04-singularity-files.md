@@ -297,6 +297,11 @@ mondo
 
 {: .output}
 
-## References
+## Consistency in your containers
+>
+> If your container is not behaving as expected, a good place to start is adding the `--containall` flag, as an unexpected 
+> enviroment variable or bind mount may be the cause.
+{: .callout}
+
 
 \[1\] Gregory M. Kurzer, Containers for Science, Reproducibility and Mobility: Singularity P2. Intel HPC Developer Conference, 2017. Available at: https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf
