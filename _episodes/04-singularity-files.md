@@ -160,7 +160,11 @@ cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      p
 
 {: .output}
 
-You can also specify multiple binds to `-B` by separating them by commas (`,`).
+If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
+
+```bash
+singularity -B dir1,dir2,dir3 ...
+```
 
 You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building Singularity containers.
 
@@ -191,11 +195,6 @@ my_example_file
 
 {: .output}
 
-If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
-
-```bash
-singularity -B dir1,dir2,dir3 ...
-```
 
 {: .source}
 
