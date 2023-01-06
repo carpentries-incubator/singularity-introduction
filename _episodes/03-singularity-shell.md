@@ -100,5 +100,3 @@ As shown above, we have opened a shell in a new container started from the `lolc
 {: .discussion}
 
 Use the `exit` command to exit from the container shell.
-
-

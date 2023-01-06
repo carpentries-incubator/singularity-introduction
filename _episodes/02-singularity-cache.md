@@ -23,13 +23,11 @@ If you delete a local `.sif` image that you have pulled from a remote image repo
 rm lolcow_latest.sif
 singularity pull library://sylabsed/examples/lolcow
 ~~~
-
 {: .language-bash}
 
 ~~~
 INFO:    Use image from cache
 ~~~
-
 {: .output}
 
 As we can see in the above output, the image has been returned from the cache and we don't see the output that we saw previously showing the image being downloaded from Singularity Hub.
@@ -39,14 +37,12 @@ How do we know what is stored in the local cache? We can find out using the `sin
 ~~~
 singularity cache list
 ~~~
-
 {: .language-bash}
 
 ~~~
 There are 1 container file(s) using 62.65 MB and 0 oci blob file(s) using 0.00 kB of space
 Total space used: 62.65 MB
 ~~~
-
 {: .output}
 
 This tells us how many container files are stored in the cache and how much disk space the cache is using but it doesn't tell us _what_ is actually being stored. To find out more information we can add the `-v` verbose flag to the `list` command:
@@ -54,7 +50,6 @@ This tells us how many container files are stored in the cache and how much disk
 ~~~
 singularity cache list -v
 ~~~
-
 {: .language-bash}
 
 ~~~
@@ -64,19 +59,16 @@ lolcow_latest.sif   2020-04-03 13:20:44    62.65 MB         shub
 There are 1 container file(s) using 62.65 MB and 0 oci blob file(s) using 0.00 kB of space
 Total space used: 62.65 MB
 ~~~
-
 {: .output}
 
 This provides us with some more useful information about the actual images stored in the cache. In the `TYPE` column we can see that our image type is `shub` because it's a `SIF` image that has been pulled from Singularity Hub.
 
 > ## Cleaning the Singularity image cache
-
 > We can remove images from the cache using the `singularity cache clean` command. Running the command without any options will display a warning and ask you to confirm that you want to remove everything from your cache.
 >
 > You can also remove specific images or all images of a particular type. Look at the output of `singularity cache clean --help` for more information.
 {: .callout}
 
 > ## Cache location
-
 > By default, Singularity uses `$HOME/.singularity/cache` as the location for the cache. You can change the location of the cache by setting the `SINGULARITY_CACHEDIR` environment variable to the cache location you want to use.
 {: .callout}
