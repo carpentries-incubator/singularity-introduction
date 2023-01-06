@@ -53,8 +53,11 @@ A container is an entity providing an isolated software environment (or filesyst
 If you have already used a Virtual Machine, or VM, you're actually already familiar with some of the concepts of a container.
 
 <!-- ![Containers vs. VMs]({{ page.root }}/fig/container_vs_vm.png) -->
+<div>
 <img src="{{ page.root }}/fig/container_vs_vm.png" alt="Containers vs. VMs" width="619" height="331"/>
-
+<em>Credit Pawsey Centre. <a href="https://pawseysc.github.io/sc19-containers/">Containers in HPC</a></em>
+</div>
+  
 The key difference here is that VMs virtualise **hardware** while containers virtualise **operating systems**.  There are other differences (and benefits), in particular containers are:
 
 * lighter weight to run (less CPU and memory usage, faster start-up times)
