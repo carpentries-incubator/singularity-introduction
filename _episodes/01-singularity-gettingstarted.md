@@ -40,7 +40,6 @@ Working with Singularity containers:
 </ol>
 
 > ## Work in progress
-
 > This lesson is new material that is under ongoing development. We will introduce Singularity and demonstrate how to work with it. As the tools and best practices continue to develop, elements of this material are likely to evolve. We welcome any comments or suggestions on how the material can be improved or extended.
 {: .callout}
 
@@ -103,7 +102,6 @@ A number of tools are available to create, deploy and run containerised applicat
 ## What is Docker
 
 > ## Loading a module
-
 > HPC systems often use *modules* to provide access to software on the system so you may need to use the command:
 >
 > ~~~
@@ -117,13 +115,11 @@ A number of tools are available to create, deploy and run containerised applicat
 ~~~
 singularity --version
 ~~~
-
 {: .language-bash}
 
 ~~~
 singularity version 3.5.3
 ~~~
-
 {: .output}
 
 Depending on the version of Singularity installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
@@ -137,14 +133,12 @@ mkdir test
 cd test
 singularity pull library://sylabsed/examples/lolcow
 ~~~
-
 {: .language-bash}
 
 ~~~
 INFO:    Downloading shub image
  59.75 MiB / 59.75 MiB [===============================================================================================================] 100.00% 52.03 MiB/s 1s
 ~~~
-
 {: .output}
 
 What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
@@ -152,7 +146,6 @@ What just happened?! We pulled a SIF image from Singularity Hub using the `singu
 ~~~
 singularity run lolcow_latest.sif
 ~~~
-
 {: .language-bash}
 
 ~~~
@@ -167,7 +160,6 @@ _____________________________
                 ||----w |
                 ||     ||
 ~~~
-
 {: .output}
 
 Most images are also directly executable
@@ -175,7 +167,6 @@ Most images are also directly executable
 ~~~
 ./lolcow_latest.sif
 ~~~
-
 {: .language-bash}
 
 ~~~
@@ -190,7 +181,6 @@ Most images are also directly executable
                 ||----w |
                 ||     ||
 ~~~
-
 {: .output}
 
 How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
@@ -200,7 +190,6 @@ When you run a container from a Singularity image without using any additional c
 ~~~
 singularity inspect -r lolcow_latest.sif
 ~~~
-
 {: .language-bash}
 
 ~~~
@@ -208,7 +197,6 @@ singularity inspect -r lolcow_latest.sif
 
     fortune | cowsay | lolcat
 ~~~
-
 {: .output}
 
 This shows us the script within the `lolcow_latest.sif` image configured to run by default when we use the `singularity run` command.

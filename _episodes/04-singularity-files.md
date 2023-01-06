@@ -29,7 +29,6 @@ $ singularity shell lolcow_latest.sif
 Singularity> whoami
 jc1000
 ~~~
-
 {: .language-bash}
 
 But hang on! I downloaded the standard, public version of the `lolcow_latest.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
@@ -91,8 +90,8 @@ Host system:                                                      Singularity co
 >
 > 1. Try to create a file in the root directory, `touch /bin/somefile`. Is that what you expected would happen?
 >
-> 2. In in your home directory, run the same command `touch ~/somefile`. Why does it work here? What happens to it when you exit the 
-> container?
+> 2. In in your home directory, run the same command `touch ~/somefile`. Why does it work here? What happens to it when
+> you exit the container?
 >
 > 3. Some of the files in the root directory are owned by you. Why might this be?
 >
@@ -126,7 +125,6 @@ The `-B` or `--bind` option to the `singularity` command is used to specify addi
 $ singularity shell -B /work/z19/shared lolcow_latest.sif
 Singularity> ls /work/z19/shared
 ```
-
 {: .language-bash}
 
 ```
@@ -137,7 +135,6 @@ adrianj      edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm  moose.job 
 antlr-2.7.7.tar.gz  edge512x384.pgm  hj      job-defmpi-cpe-21.03-robust mrb4cab      petsc-hypre-cpe21.03     xios-2.5
 cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      petsc-hypre-cpe21.03-gcc10.2.0
 ```
-
 {: .output}
 
 Note that, by default, a bind is mounted at the same path in the container as on the host system. You can also specify where a host directory is mounted in the container by separating the host path from the container path by a colon (`:`) in the option:
@@ -146,7 +143,6 @@ Note that, by default, a bind is mounted at the same path in the container as on
 $ singularity shell -B /work/z19/shared:/shared-data lolcow_latest.sif
 Singularity> ls /shared-data
 ```
-
 {: .language-bash}
 
 ```
@@ -157,7 +153,6 @@ adrianj      edge256x192.pgm  gnuplot-5.4.1.tar.gz  image768x768.pgm  moose.job 
 antlr-2.7.7.tar.gz  edge512x384.pgm  hj      job-defmpi-cpe-21.03-robust mrb4cab      petsc-hypre-cpe21.03     xios-2.5
 cdo-archer2.sif     edge768x768.pgm  image192x128.pgm    jsindt   paraver      petsc-hypre-cpe21.03-gcc10.2.0
 ```
-
 {: .output}
 
 If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
@@ -171,13 +166,11 @@ You can also copy data into a container image at build time if there is some sta
 ```bash
 singularity exec -B $TUTO lolcow_latest.sif ls -Fh $TUTO/assets
 ```
-
 {: .source}
 
 ```
 css/   fonts/ img/   js/
 ```
-
 {: .output}
 
 Also, we can write files in a host dir which has been bind mounted in the container:
@@ -186,24 +179,18 @@ Also, we can write files in a host dir which has been bind mounted in the contai
 singularity exec -B $TUTO lolcow_latest.sif touch $TUTO/my_example_file
 ls my_example_file
 ```
-
 {: .source}
 
 ```
 my_example_file
 ```
-
 {: .output}
-
-
-{: .source}
 
 Equivalently, directories to be bind mounted can be specified using the environment variable `SINGULARITY_BINDPATH`:
 
 ```bash
 export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 ```
-
 {: .source}
 
 > ## Mounting `$HOME`
@@ -218,7 +205,6 @@ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 > ```bash
 > -B $HOME/.local
 > ```
->
 > {: .source}
 >
 > Or, if you want a full fledged home, you might define an alternative host directory to act as your container home, as in
@@ -226,7 +212,6 @@ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 > ```bash
 > -B /path/to/fake/home:$HOME
 > ```
->
 > {: .source}
 >
 > Finally, you should also **avoid running a container from your host home**,
@@ -241,13 +226,11 @@ By default, shell variables are inherited in the container from the host:
 export HELLO=world
 singularity exec lolcow_latest.sif bash -c 'echo $HELLO'
 ```
-
 {: .source}
 
 ```
 world
 ```
-
 {: .output}
 
 There might be situations where you want to isolate the shell environment of the container; to this end you can use the flag `-C`, or `--containall`:  
@@ -257,13 +240,11 @@ There might be situations where you want to isolate the shell environment of the
 export HELLO=world
 singularity exec -C lolcow_latest.sif bash -c 'echo $HELLO'
 ```
-
 {: .source}
 
 ```
-
+HELLO
 ```
-
 {: .output}
 
 If you need to pass only specific variables to the container, that might or might
@@ -274,13 +255,11 @@ this prefix will be automatically trimmed in the container:
 export SINGULARITYENV_CIAO=mondo
 singularity exec -C lolcow_latest.sif bash -c 'echo $CIAO'
 ```
-
 {: .source}
 
 ```
 mondo
 ```
-
 {: .output}
 
 An alternative way to define variables is to use the flag `--env`:
@@ -288,13 +267,11 @@ An alternative way to define variables is to use the flag `--env`:
 ```bash
 singularity exec --env CIAO=mondo lolcow_latest.sif bash -c 'echo $CIAO'
 ```
-
 {: .source}
 
 ```
 mondo
 ```
-
 {: .output}
 
 > ## Consistency in your containers
