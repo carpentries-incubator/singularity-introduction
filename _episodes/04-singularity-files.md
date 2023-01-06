@@ -297,7 +297,7 @@ mondo
 
 {: .output}
 
-## Consistency in your containers
+> ## Consistency in your containers
 >
 > If your container is not behaving as expected, a good place to start is adding the `--containall` flag, as an unexpected 
 > enviroment variable or bind mount may be the cause.
