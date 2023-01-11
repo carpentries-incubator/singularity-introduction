@@ -131,3 +131,30 @@ Here we've looked at a very simple example of how to create an image. At this st
  - `%help`
 
 The [`Sections` part of the definition file documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html#sections) details all the sections and provides an example definition file that makes use of all the sections.
+
+
+### Useful base images
+
+At the time of writing, [Docker Hub](https://hub.docker.com) is the most popular web registry for general purpose container images. Therefore all images mentioned below are hosted in this registry.
+
+#### CUDA
+
+[nvidia/cuda](https://hub.docker.com/r/nvidia/cuda) has images to build GPU enabled applications. There are different image types for different needs. Tags containing `runtime` are suitable for binary applications that are ready to run; if you need to compile GPU code, pick tags containing `devel` instead. Different OS flavours are available, too.
+
+#### MPI
+
+As you can see in the episode on MPI applications, when containerising this type of software the MPI libraries in the image need to be ABI compatible with the MPI libraries in the host. The Pawsey Supercomputing Centre maintains some **MPICH** base images at [pawsey/mpi-base](https://hub.docker.com/r/pawsey/mpi-base), for building images that will run on our HPC systems.
+
+#### Python
+
+[python](https://hub.docker.com/_/python) hosts the official Python images. Different versions are available for some OS flavours. At the time of writing the default image tag corresponds to Python 3.8 on Debian 10. Smaller base images have tags ending with `-slim`.
+
+[continuumio/miniconda3](https://hub.docker.com/r/continuumio/miniconda3) are images provided by the maintainers of the [Anaconda](https://anaconda.org) project. They ship with Python 3, as well as `pip` and `conda` to install and manage packages. At the time of writing, the most recent version is `4.7.12`, based on Python `3.7.4`.
+
+If you need interactive Jupyter Notebooks, [Jupyter Docker Stacks](https://jupyter-docker-stacks.readthedocs.io/en/latest/) maintain a series of dedicated container images. Among others, there is the base SciPy image [jupyter/scipy-notebook](https://hub.docker.com/r/jupyter/scipy-notebook), the data science image [jupyter/datascience-notebook](https://hub.docker.com/r/jupyter/datascience-notebook), and the machine learning image [jupyter/tensorflow-notebook](https://hub.docker.com/r/jupyter/tensorflow-notebook).
+
+#### R
+
+The [Rocker Project](https://www.rocker-project.org) maintains a number of good R base images. Of particular relevance is [rocker/tidyverse](https://hub.docker.com/r/rocker/tidyverse), which embeds the basic R distribution, an RStudio web-server installation and the [tidyverse](https://www.tidyverse.org) collection of packages for data science. At the time of writing, the most recent version is `3.6.1`.
+
+Other more basic images are [rocker/r-ver](https://hub.docker.com/r/rocker/r-ver) (R only) and [rocker/rstudio](https://hub.docker.com/r/rocker/rstudio) (R + RStudio).
