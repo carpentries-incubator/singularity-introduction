@@ -19,18 +19,43 @@ keypoints:
 ---
 
 There are lots of reasons why you might want to create your **own** Singularity container image.
+
 - You can't find an existing container image with all the tools you need.
 - You want to have a container image to "archive" all the specific software versions you ran for a project.
 - You want to share your workflow with someone else.
 
 ## Sandbox installation
 
+The most intuative way to build a container is to do so interactively, this allows you to install packages, configure applications and test commands, then when finished export as an image.
+
+This is possible using the `--sandbox` flag, for example 
+
+```bash
+sudo singularity build --sandbox ubuntu docker://ubuntu
+```
+
+This creates an image called  `ubuntu` bootstrapped from `docker://ubuntu`
+You can then run
+
+```bash
+sudo singularity shell --writable ubuntu
+```
+
+To start setting up your workflow.
+
+However, there are two big problems with this approach, firstly building a sandbox image requires you to have root access on your machine and therefore unavailable to many people, secondly it doesn't provide the best support for our ultimate goal of _reproducibility_.
+
+This is because, even though you can share the image, the steps taken to create it are unclear.
+`-sandbox` should only be used for initial prototyping of your image, the rest of the time you should use a _definition file_.
+
+<!-- 
+## Sandbox installation
+
 You can build a container interactively within a sandbox environment. This means you get a shell within the container environment and install and configure packages and code as you wish before exiting the sandbox and converting it into a container image.
 
 > ## Sandbox Root Privilege
-> 
-> Building a sandbox image requires you to have root access on your
-> machine.
+>
+> Building a sandbox image requires you to have root access on your machine.
 
 To build into a sandbox use the `build --sandbox` command and option:
 
@@ -41,7 +66,6 @@ sudo singularity build --sandbox ubuntu/ library://ubuntu
 This command creates a directory called `ubuntu/` with an entire Ubuntu Operating System and some Singularity metadata in your current working directory.
 
 You can use commands like shell, exec , and run with this directory just as you would with a Singularity image. If you pass the --writable option when you use your container you can also write files within the sandbox directory (provided you have the permissions to do so).
-
 
 Can you apt-get? if so, include example.
 
@@ -62,7 +86,7 @@ singularity exec ubuntu/ ls /foo
 > > 
 > > Definition files are small text files while container files may be very large, multi-gigabyte files that are difficult and time consuming to move around. This makes definition files ideal for storing in a version control system along with their revisions.
 > {: .solution}
-{: .challenge}
+{: .challenge} -->
 
 ### Creating a Singularity Definition File
 

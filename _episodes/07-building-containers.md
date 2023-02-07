@@ -34,13 +34,13 @@ There are a couple of different ways to work around this restriction.
     <td>Install Singularity locally on a system where you do have administrative access.</td>
     <td></td>
     <td></td>
-    <td></td>
+    <td>Not possible for many people</td>
   </tr>
   <tr>
     <td>Build your container from within another container</td>
     <td></td>
     <td></td>
-    <td></td>
+    <td>A bit contrived</td>
   </tr>
   <tr>
     <td>Use a 'remote build service' to build your container</td>
