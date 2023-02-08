@@ -21,12 +21,12 @@ If you delete a local `.sif` image that you have pulled from a remote image repo
 
 ~~~
 rm lolcow_latest.sif
-apptainer pull library://sylabsed/examples/lolcow
+apptainer pull docker://ghcr.io/apptainer/lolcow
 ~~~
 {: .language-bash}
 
 ~~~
-INFO:    Use image from cache
+INFO:    Using cached SIF image
 ~~~
 {: .output}
 
