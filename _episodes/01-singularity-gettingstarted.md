@@ -29,7 +29,7 @@ If you have already used a Virtual Machine, or VM, you're actually already famil
 <div>
 <img src="{{ page.root }}/fig/container_vs_vm.png" alt="Containers vs. VMs" width="619" height="331"/>
 <em format="display:block;text-align: center;margin:-20px 0 20px 0;> 
-Credit: Pawsey Centre, <a href="'ttps://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em>
+Credit: Pawsey Centre, <a href='https://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em>
 </div>
   
 The key difference here is that VMs virtualise **hardware** while containers virtualise **operating systems**.  There are other differences (and benefits), in particular containers are:

@@ -58,12 +58,12 @@ instructor_post_survey: "https://www.surveymonkey.com/r/instructor_training_post
 
 # Container command
 software:
-  name: "Apptainer"
-  module: "Apptainer"
-  cmd: "apptainer"
-  url: "https://apptainer.org/"
+  name: "Singularity"
+  module: "Singularity"
+  cmd: "singularity"
+  url: "https://docs.sylabs.io/guides/3.0/user-guide/index.html"
   lolcow: "library://sylabsed/examples/lolcow"
-
+  prompt: "Singularity"
 # Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am).
 start_time: 0
 
