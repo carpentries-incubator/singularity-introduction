@@ -62,7 +62,7 @@ software:
   module: "Apptainer"
   cmd: "apptainer"
   url: "https://apptainer.org/"
-  lolcow: "library://sylabsed/examples/lolcow"
+  lolcow: "docker://ghcr.io/apptainer/lolcow"
 
 # Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am).
 start_time: 0
