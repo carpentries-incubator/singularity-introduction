@@ -1,13 +1,13 @@
 ---
-title: "Singularity: Getting started"
+title: "Getting Started with Containers"
 start: true
 teaching: 30
 exercises: 20
 questions:
-- "What is Singularity and why might I want to use it?"
+- "What are containers and when might I want to use them?"
 objectives:
-- "Understand what Singularity is and when you might want to use it."
-- "Undertake your first run of a simple Singularity container."
+- "Understand what containers are and when you might want to use one."
+- "Undertake your first run of a simple container."
 keypoints:
 - "Containers enable you to package up an application and its dependencies."
 - "By using containers, you can better enforce reproducibility, portability and share-ability of your computational workflows."
@@ -17,33 +17,7 @@ keypoints:
 - "The `singularity` command can be used to pull images from Singularity Hub and run a container from an image file."
 ---
 
-The episodes in this lesson will introduce you to the [Singularity](https://sylabs.io/singularity/) container platform and demonstrate how to set up and use Singularity.
-
-This material is split into 2 parts:
-
-*Part I: Basic usage, working with images*
-
- 1. **Singularity: Getting started**: This introductory episode
-
-Working with Singularity containers:
-<ol start="2">
- <li><strong>The singularity cache: </strong> Why, where and how does Singularity cache images locally?</li>
- <li><strong>Running commands within a Singularity container: </strong> How to run commands within a Singularity container.</li>
- <li><strong>Working with files and Singularity containers: </strong> Moving files into a Singularity container; accessing files on the host from within a container.</li>
- <li><strong>Using Docker images with Singularity: </strong>How to run Singularity containers from Docker images.</li>
- </ol>
- *Part II: Creating images, running parallel codes*
- <ol start="6">
-   <li><strong>Preparing to build Singularity images</strong>: Getting started with the Docker Singularity container.</li>
-   <li><strong>Building Singularity images</strong>: Explaining how to build and share your own Singularity images.</li>
-   <li><strong>Running MPI parallel jobs using Singularity containers</strong>: Explaining how to run MPI parallel codes from within Singularity containers.</li>
-</ol>
-
-> ## Work in progress
-> This lesson is new material that is under ongoing development. We will introduce Singularity and demonstrate how to work with it. As the tools and best practices continue to develop, elements of this material are likely to evolve. We welcome any comments or suggestions on how the material can be improved or extended.
-{: .callout}
-
-# Singularity - Part I
+The episodes in this lesson will introduce you to the [{{ site.software.name }}]({ site.software.url }) container platform and demonstrate how to set up and use {{ site.software.name }}.
 
 ### Containers vs Virtual Machines
 
@@ -54,7 +28,8 @@ If you have already used a Virtual Machine, or VM, you're actually already famil
 <!-- ![Containers vs. VMs]({{ page.root }}/fig/container_vs_vm.png) -->
 <div>
 <img src="{{ page.root }}/fig/container_vs_vm.png" alt="Containers vs. VMs" width="619" height="331"/>
-<em format="display:block;text-align: center;margin:-20px 0 20px 0;>Credit: Pawsey Centre, <a href="https://pawseysc.github.io/sc19-containers/">Containers in HPC</a></em>
+<em format="display:block;text-align: center;margin:-20px 0 20px 0;> 
+Credit: Pawsey Centre, <a href="'ttps://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em>
 </div>
   
 The key difference here is that VMs virtualise **hardware** while containers virtualise **operating systems**.  There are other differences (and benefits), in particular containers are:
@@ -105,33 +80,33 @@ A number of tools are available to create, deploy and run containerised applicat
 > HPC systems often use *modules* to provide access to software on the system so you may need to use the command:
 >
 > ~~~
-> $ module load Singularity
+> $ module load {{ site.software.module }}
 > ~~~
 >
 > {: .language-bash}
-> before you can use the `singularity` command on the system.
+> before you can use the `{{ site.software.cmd }}` command on the system.
 {: .callout}
 
 ~~~
-singularity --version
+{{ site.software.cmd }} --version
 ~~~
 {: .language-bash}
 
 ~~~
-singularity version 3.5.3
+{{ site.software.cmd }} version 3.5.3
 ~~~
 {: .output}
 
-Depending on the version of Singularity installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
+Depending on the version of {{ site.software.name }} installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
 
-## Getting an image and running a Singularity container
+## Getting an image and running a container
 
 Let's begin by creating a `test` directory, changing into it and *pulling* a test *Hello World* image from Singularity Hub:
 
 ~~~
 mkdir test
 cd test
-singularity pull library://sylabsed/examples/lolcow
+{{ site.software.cmd }} pull {{ site.software.lolcow }}
 ~~~
 {: .language-bash}
 
@@ -141,10 +116,10 @@ INFO:    Downloading shub image
 ~~~
 {: .output}
 
-What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
+What just happened?! We pulled a SIF image from Singularity Hub using the `{{ site.software.cmd }} pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
-singularity run lolcow_latest.sif
+{{ site.software.cmd }} run lolcow_latest.sif
 ~~~
 {: .language-bash}
 
@@ -185,10 +160,10 @@ Most images are also directly executable
 
 How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
 
-When you run a container from a Singularity image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
+When you run a container from a {{ site.software.name }} image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `{{ site.software.cmd }} inspect` command:
 
 ~~~
-singularity inspect -r lolcow_latest.sif
+{{ site.software.cmd }} inspect -r lolcow_latest.sif
 ~~~
 {: .language-bash}
 
@@ -199,6 +174,6 @@ singularity inspect -r lolcow_latest.sif
 ~~~
 {: .output}
 
-This shows us the script within the `lolcow_latest.sif` image configured to run by default when we use the `singularity run` command.
+This shows us the script within the `lolcow_latest.sif` image configured to run by default when we use the `{{ site.software.cmd }} run` command.
 
-That concludes this introductory Singularity episode. The next episode looks in more detail at running containers.
+That concludes this introductory {{ site.software.name }} episode. The next episode looks in more detail at running containers.
