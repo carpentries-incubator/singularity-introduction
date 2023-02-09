@@ -4,43 +4,42 @@ start: true
 teaching: 30
 exercises: 20
 questions:
-- "What is Singularity and why might I want to use it?"
+- "What is a container and why might I want to use it?"
 objectives:
-- "Understand what Singularity is and when you might want to use it."
-- "Undertake your first run of a simple Singularity container."
+- "Understand what a container is and when you might want to use it."
+- "Undertake your first run of a simple Apptainer container."
 keypoints:
 - "Containers enable you to package up an application and its dependencies."
 - "By using containers, you can better enforce reproducibility, portability and share-ability of your computational workflows."
-- "Singularity is another container platform and it is often used in cluster/HPC/research environments."
-- "Singularity has a different security model to other container platforms, one of the key reasons that it is well suited to HPC and cluster environments."
-- "Singularity has its own container image format (SIF)."
-- "The `singularity` command can be used to pull images from Singularity Hub and run a container from an image file."
+- "Apptainer (and Singularity) are container platforms and are often used in cluster/HPC/research environments."
+- "Apptainer has a different security model to other container platforms, one of the key reasons that it is well suited to HPC and cluster environments."
+- "Apptainer has its own container image format based off the original Singularity Image Format (SIF)."
+- "The `apptainer` command can be used to pull images from Docker Hub or other locations such as a website and run a container from an image file."
 ---
 
-The episodes in this lesson will introduce you to the [Singularity](https://sylabs.io/singularity/) container platform and demonstrate how to set up and use Singularity.
+The episodes in this lesson will introduce you to the [Apptainer](https://apptainer.org/) container platform and demonstrate how to set up and use Apptainer.
 
 This material is split into 2 parts:
 
 *Part I: Basic usage, working with images*
 
- 1. **Singularity: Getting started**: This introductory episode
+ 1. **Containers: Getting started**: This introductory episode
 
-Working with Singularity containers:
+Working with containers:
 <ol start="2">
- <li><strong>The singularity cache: </strong> Why, where and how does Singularity cache images locally?</li>
- <li><strong>Running commands within a Singularity container: </strong> How to run commands within a Singularity container.</li>
- <li><strong>Working with files and Singularity containers: </strong> Moving files into a Singularity container; accessing files on the host from within a container.</li>
- <li><strong>Using Docker images with Singularity: </strong>How to run Singularity containers from Docker images.</li>
+ <li><strong>The apptainer cache: </strong> Why, where and how does Apptainer cache images locally?</li>
+ <li><strong>Running commands within a container: </strong> How to run commands within a container.</li>
+ <li><strong>Working with files and containers: </strong> Moving files into a container; accessing files on the host from within a container.</li>
+ <li><strong>Using Docker images with Apptainer: </strong>How to run containers from Docker images.</li>
  </ol>
  *Part II: Creating images, running parallel codes*
  <ol start="6">
-   <li><strong>Preparing to build Singularity images</strong>: Getting started with the Docker Singularity container.</li>
-   <li><strong>Building Singularity images</strong>: Explaining how to build and share your own Singularity images.</li>
-   <li><strong>Running MPI parallel jobs using Singularity containers</strong>: Explaining how to run MPI parallel codes from within Singularity containers.</li>
+   <li><strong>Preparing to build container images</strong>: Getting started with the container.</li>
+   <li><strong>Building container images</strong>: Explaining how to build and share your own container images.</li>
 </ol>
 
 > ## Work in progress
-> This lesson is new material that is under ongoing development. We will introduce Singularity and demonstrate how to work with it. As the tools and best practices continue to develop, elements of this material are likely to evolve. We welcome any comments or suggestions on how the material can be improved or extended.
+> This lesson is new material that is under ongoing development. We will introduce Apptainer and demonstrate how to work with it. As the tools and best practices continue to develop, elements of this material are likely to evolve. We welcome any comments or suggestions on how the material can be improved or extended.
 {: .callout}
 
 # Singularity - Part I
@@ -87,7 +86,7 @@ A ***container*** is a virtual environment that is based on an image. That is, t
 
 A **registry** is a server application where images are stored and can be accessed by users.  It can be public (*e.g.* *Docker Hub*) or private.
 
-To build an image we need a recipe.  A recipe file is called a **Definition File**, or **def file**, in the *Singularity* jargon and a **Dockerfile** in the *Docker* world.
+To build an image we need a recipe.  A recipe file is called a **Definition File**, or **def file**, in the *Apptainer* jargon and a **Dockerfile** in the *Docker* world.
 
 ### Container engines
 
@@ -99,32 +98,32 @@ A number of tools are available to create, deploy and run containerised applicat
 
 * **Apptainer**: an open-source offshoot of **Singularity**. Provides all the same functionality as **Singularity** and moving forward will likely become the open-source standard. See the [user guide](https://apptainer.org/docs/user/main/) for extensive documentation.
 
-## What is Docker
+## What is Apptainer
 
 > ## Loading a module
 > HPC systems often use *modules* to provide access to software on the system so you may need to use the command:
 >
 > ~~~
-> $ module load Singularity
+> $ module load Apptainer
 > ~~~
 >
 > {: .language-bash}
-> before you can use the `singularity` command on the system.
+> before you can use the `apptainer` command on the system.
 {: .callout}
 
 ~~~
-singularity --version
+apptainer --version
 ~~~
 {: .language-bash}
 
 ~~~
-singularity version 3.5.3
+apptainer version 1.1.5-dirty
 ~~~
 {: .output}
 
-Depending on the version of Singularity installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
+Depending on the version of Apptainer installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
 
-## Getting an image and running a Singularity container
+## Getting an image and running a container
 
 We will be working from the training project directory `/nesi/project/nesi99991/singularity_ernzz2023`.
 
@@ -138,34 +137,36 @@ Let's begin by creating a directory with *your username*, changing into it and *
 ~~~
 mkdir test usrname123
 cd usrname123
-singularity pull library://sylabsed/examples/lolcow
+apptainer pull docker://ghcr.io/apptainer/lolcow
 ~~~
 {: .language-bash}
 
 ~~~
-INFO:    Downloading shub image
- 59.75 MiB / 59.75 MiB [===============================================================================================================] 100.00% 52.03 MiB/s 1s
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+Getting image source signatures
+Copying blob 5ca731fc36c2 done
+Copying blob 16ec32c2132b done
+Copying config fd0daa4d89 done
+Writing manifest to image destination
+Storing signatures
+2023/02/09 12:20:21  info unpack layer: sha256:16ec32c2132b43494832a05f2b02f7a822479f8250c173d0ab27b3de78b2f058
+2023/02/09 12:20:24  info unpack layer: sha256:5ca731fc36c28789c5ddc3216563e8bfca2ab3ea10347e07554ebba1c953242e
+INFO:    Creating SIF file...
 ~~~
 {: .output}
 
-What just happened?! We pulled a SIF image from Singularity Hub using the `singularity pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
+What just happened?! We pulled a Docker image from Docker Hub using the `apptainer pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
-singularity run lolcow_latest.sif
+apptainer run lolcow_latest.sif
 ~~~
 {: .language-bash}
 
 ~~~
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-_____________________________
-/ This was the most unkindest cut of all. \
-|                                         |
-\ -- William Shakespeare, "Julius Caesar" /
- -----------------------------------------
+ _________________________
+< Wed Feb 8 23:36:16 2023 >
+ -------------------------
         \   ^__^
          \  (oo)\_______
             (__)\       )\/\
@@ -182,16 +183,9 @@ Most images are also directly executable
 {: .language-bash}
 
 ~~~
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
-ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_init.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
- _________________________________________
-/ This was the most unkindest cut of all. \
-|                                         |
-\ -- William Shakespeare, "Julius Caesar" /
- -----------------------------------------
+ _________________________
+< Wed Feb 8 23:36:36 2023 >
+ -------------------------
         \   ^__^
          \  (oo)\_______
             (__)\       )\/\
@@ -202,32 +196,27 @@ ERROR: ld.so: object '/opt/nesi/CS400_centos7_bdw/XALT/current/lib64/libxalt_ini
 
 How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
 
-When you run a container from a Singularity image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `singularity inspect` command:
-
-> ## Whats with the errors?
-
-> This is to do with a monitoring library used on NeSI, it can be fixed by unloading the `XALT` module.
-> This can be done with the command.
->
-> ~~~
-> $ module unload XALT
-> ~~~
->
-> {: .language-bash}
-{: .callout}
+When you run a container from a sif image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `apptainer inspect` command:
 
 ~~~
-singularity inspect -r lolcow_latest.sif
+apptainer inspect -r lolcow_latest.sif | head
 ~~~
 {: .language-bash}
 
 ~~~
 #!/bin/sh
+OCI_ENTRYPOINT='"/bin/sh" "-c" "date | cowsay | lolcat"'
+OCI_CMD=''
 
-    fortune | cowsay | lolcat
+# When SINGULARITY_NO_EVAL set, use OCI compatible behavior that does
+# not evaluate resolved CMD / ENTRYPOINT / ARGS through the shell, and
+# does not modify expected quoting behavior of args.
+if [ -n "$SINGULARITY_NO_EVAL" ]; then
+    # ENTRYPOINT only - run entrypoint plus args
+    if [ -z "$OCI_CMD" ] && [ -n "$OCI_ENTRYPOINT" ]; then
 ~~~
 {: .output}
 
-This shows us the script within the `lolcow_latest.sif` image configured to run by default when we use the `singularity run` command.
+This shows us the first 10 lines of the script within the `lolcow_latest.sif` image configured to run by default when we use the `apptainer run` command.
 
-That concludes this introductory Singularity episode. The next episode looks in more detail at running containers.
+That concludes this introductory container episode. The next episode looks in more detail at running containers.
