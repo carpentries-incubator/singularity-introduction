@@ -1,5 +1,5 @@
 ---
-title: "Using Singularity containers to run commands"
+title: "Using containers to run commands"
 teaching: 10
 exercises: 5
 questions:
@@ -14,43 +14,20 @@ keypoints:
 - "The `apptainer shell` command can be used to start a container and run an interactive shell within it."
 ---
 
-## Using Apptainer on NeSI Mahuika cluster
+## Pulling a new image and running a container
 
-> ## Loading the module
-> ~~~
-> $ module load Apptainer
-> ~~~
->
-> {: .language-bash}
-> before you can use the `apptainer` command on the system.
-{: .callout}
-
-~~~
-apptainer --version
-~~~
-{: .language-bash}
-
-~~~
-apptainer version 1.1.5-dirty
-~~~
-{: .output}
-
-Depending on the version of Apptainer installed on your system, you may see a different version. At the time of writing, `v3.5.3` is the latest release of Singularity.
-
-## Getting an image and running a container
-
-We will be working from the training project directory `/nesi/project/nesi99991/singularity_ernzz2023`.
+We will be working from the training project directory `/nesi/project/nesi99991/20230217_ernz`.
 
 ```
-cd /nesi/project/nesi99991/singularity_ernzz2023
+cd /nesi/project/nesi99991/20230217_ernz
 ```
 
 
-Let's begin by creating a directory with *your username*, changing into it and *pulling* a test *Hello World* image from Singularity Hub:
+Let's begin by creating a directory with *your username*, changing into it and *pulling* a test *Hello World* image from a Docker image repository:
 
 ~~~
-mkdir test usrname123
-cd usrname123
+mkdir /nesi/project/nesi99991/20230217_ernz/$USER
+cd /nesi/project/nesi99991/20230217_ernz/$USER
 apptainer pull docker://ghcr.io/apptainer/lolcow
 ~~~
 {: .language-bash}
@@ -70,7 +47,7 @@ INFO:    Creating SIF file...
 ~~~
 {: .output}
 
-What just happened?! We pulled a Docker image from Docker Hub using the `apptainer pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
+We pulled a Docker image from a Docker image repo using the `apptainer pull` command and directed it to store the image file using the default name `lolcow_latest.sif` in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
 apptainer run lolcow_latest.sif
@@ -151,7 +128,7 @@ Hello World!
 
 Here we see that a container has been started from the `lolcow_latest.sif` image and the `echo` command has been run within the container, passing the input `Hello World!`. The command has echoed the provided input to the console and the container has terminated.
 
-Note that the use of `singularity exec` has overriden any run script set within the image metadata and the command that we specified as an argument to `singularity exec` has been run instead.
+Note that the use of `apptainer exec` has overriden any run script set within the image metadata and the command that we specified as an argument to `apptainer exec` has been run instead.
 
 > ## Basic exercise: Running a different command within the "lolcow" container
 >
