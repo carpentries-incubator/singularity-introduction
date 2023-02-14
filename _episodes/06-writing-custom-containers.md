@@ -28,18 +28,20 @@ There are lots of reasons why you might want to create your **own** {{ site.soft
 
 The most intuative way to build a container is to do so interactively, this allows you to install packages, configure applications and test commands, then when finished export as an image.
 
-This is possible using the `--sandbox` flag, for example 
+This is possible using the `--sandbox` flag, for example
 
-```bash
+```
 sudo {{ site.software.cmd }} build --sandbox ubuntu docker://ubuntu
 ```
+{: .language-bash}
 
 This creates an image called  `ubuntu` bootstrapped from `docker://ubuntu`
 You can then run
 
-```bash
+```
 sudo {{ site.software.cmd }} shell --writable ubuntu
 ```
+{: .language-bash}
 
 To start setting up your workflow.
 
@@ -47,46 +49,6 @@ However, there are two big problems with this approach, firstly building a sandb
 
 This is because, even though you can share the image, the steps taken to create it are unclear.
 `-sandbox` should only be used for initial prototyping of your image, the rest of the time you should use a _definition file_.
-
-<!-- 
-## Sandbox installation
-
-You can build a container interactively within a sandbox environment. This means you get a shell within the container environment and install and configure packages and code as you wish before exiting the sandbox and converting it into a container image.
-
-> ## Sandbox Root Privilege
->
-> Building a sandbox image requires you to have root access on your machine.
-
-To build into a sandbox use the `build --sandbox` command and option:
-
-```bash
-sudo singularity build --sandbox ubuntu/ library://ubuntu
-```
-
-This command creates a directory called `ubuntu/` with an entire Ubuntu Operating System and some Singularity metadata in your current working directory.
-
-You can use commands like shell, exec , and run with this directory just as you would with a Singularity image. If you pass the --writable option when you use your container you can also write files within the sandbox directory (provided you have the permissions to do so).
-
-Can you apt-get? if so, include example.
-
-```bash
-sudo singularity exec --writable ubuntu touch /foo
-```
-
-```bash
-singularity exec ubuntu/ ls /foo
-/foo
-```
-
-> > ## Discussion
-> > The sandbox approach is great for prototyping and testing out an image configuration but it doesn't provide the best support for our ultimate goal of _reproducibility_. If you spend time sitting at your terminal in front of a shell typing different commands to add configuration, maybe you realise you made a mistake so you undo one piece of configuration and change it. This goes on until you have your completed, working configuration but there's no explicit record of exactly what you did to create that configuration. 
-> > 
-> > Say your container image file gets deleted by accident, or someone else wants to create an equivalent image to test something. How will they do this and know for sure that they have the same configuration that you had?
-> > With a definition file, the configuration steps are explicitly defined and can be easily stored (and re-run).
-> > 
-> > Definition files are small text files while container files may be very large, multi-gigabyte files that are difficult and time consuming to move around. This makes definition files ideal for storing in a version control system along with their revisions.
-> {: .solution}
-{: .challenge} -->
 
 ### Creating a {{ site.software.name }} Definition File
 
@@ -146,13 +108,13 @@ This section is used to define a script that should be run when a container is s
 
 Here we've looked at a very simple example of how to create an image. At this stage, you might want to have a go at creating your own definition file for some code of your own or an application that you work with regularly. There are several definition file sections that were _not_ used in the above example, these are:
 
- - `%setup`
- - `%files`
- - `%environment`
- - `%startscript`
- - `%test`
- - `%labels`
- - `%help`
+- `%setup`
+- `%files`
+- `%environment`
+- `%startscript`
+- `%test`
+- `%labels`
+- `%help`
 
 The [`Sections` part of the definition file documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html#sections) details all the sections and provides an example definition file that makes use of all the sections.
 
