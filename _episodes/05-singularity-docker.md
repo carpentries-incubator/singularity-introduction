@@ -10,11 +10,11 @@ keypoints:
 - "Singularity can start a container from a Docker image which can be pulled directly from Docker Hub."
 ---
 
-## Using Docker images with Singularity
+## Using Docker images with {{ site.software.name }} 
 
-Singularity can also start containers directly from Docker images, opening up access to a huge number of existing container images available on [Docker Hub](https://hub.docker.com/) and other registries.
+{{ site.software.name }}  can also start containers directly from Docker images, opening up access to a huge number of existing container images available on [Docker Hub](https://hub.docker.com/) and other registries.
 
-While Singularity doesn't actually run a container using the Docker image (it first converts it to a format suitable for use by Singularity), the approach used provides a seamless experience for the end user. When you direct Singularity to run a container based on pull a Docker image, Singularity pulls the slices or _layers_ that make up the Docker image and converts them into a single-file Singularity SIF image.
+While {{ site.software.name }}  doesn't actually run a container using the Docker image (it first converts it to a format suitable for use by {{ site.software.name }} ), the approach used provides a seamless experience for the end user. When you direct {{ site.software.name }}  to run a container based on pull a Docker image, {{ site.software.name }}  pulls the slices or _layers_ that make up the Docker image and converts them into a single-file {{ site.software.name }}  SIF image.
 
 Moving on from the simple examples that we've looked at so far, let's pull one of the [official Docker Python images](https://hub.docker.com/_/python). We'll use the image with the tag `3.9.6-slim-buster` which has Python 3.9.6 installed on Debian's [Buster](https://www.debian.org/releases/buster/) (v10) Linux distribution:
 
@@ -98,12 +98,12 @@ In addition to running a container and having it run the default run script, you
 > > {: .language-bash}
 > > 
 > > ~~~
-> > Singularity> echo $SHELL
+> > {{ site.software.prompt }} echo $SHELL
 > > /bin/bash
-> > Singularity> cat /etc/issue
+> > {{ site.software.prompt }} cat /etc/issue
 > > Debian GNU/Linux 10 \n \l
 > > 
-> > Singularity> python
+> > {{ site.software.prompt }} python
 > > Python 3.9.6 (default, Jul 22 2021, 15:24:21) 
 > > [GCC 8.3.0] on linux
 > > Type "help", "copyright", "credits" or "license" for more information.
@@ -111,7 +111,7 @@ In addition to running a container and having it run the default run script, you
 > > Hello World!
 > > >>> exit()
 > > 
-> > Singularity> exit
+> > {{ site.software.prompt }} exit
 > > $ 
 > > ~~~
 > > {: .output}
@@ -124,7 +124,7 @@ In addition to running a container and having it run the default run script, you
 > > {: .language-bash}
 > > 
 > > ~~~
-> > Singularity> echo $SHELL
+> > {{ site.software.prompt }} echo $SHELL
 > > /bin/bash
 > > ~~~
 > > {: .output}

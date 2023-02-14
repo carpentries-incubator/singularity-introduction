@@ -18,7 +18,7 @@ keypoints:
 - "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Singularity images."
 ---
 
-There are lots of reasons why you might want to create your **own** Singularity container image.
+There are lots of reasons why you might want to create your **own** {{ site.software.name }} container image.
 
 - You can't find an existing container image with all the tools you need.
 - You want to have a container image to "archive" all the specific software versions you ran for a project.
@@ -31,14 +31,14 @@ The most intuative way to build a container is to do so interactively, this allo
 This is possible using the `--sandbox` flag, for example 
 
 ```bash
-sudo singularity build --sandbox ubuntu docker://ubuntu
+sudo {{ site.software.cmd }} build --sandbox ubuntu docker://ubuntu
 ```
 
 This creates an image called  `ubuntu` bootstrapped from `docker://ubuntu`
 You can then run
 
 ```bash
-sudo singularity shell --writable ubuntu
+sudo {{ site.software.cmd }} shell --writable ubuntu
 ```
 
 To start setting up your workflow.
@@ -88,9 +88,9 @@ singularity exec ubuntu/ ls /foo
 > {: .solution}
 {: .challenge} -->
 
-### Creating a Singularity Definition File
+### Creating a {{ site.software.name }} Definition File
 
-A Singularity Definition File is a text file that contains a series of statements that are used to create a container image. In line with the _configuration as code_ approach mentioned above, the definition file can be stored in your code repository alongside your application code and used to create a reproducible image. This means that for a given commit in your repository, the version of the definition file present at that commit can be used to reproduce a container with a known state. It was pointed out earlier in the course, when covering Docker, that this property also applies for Dockerfiles.
+A {{ site.software.name }} Definition File is a text file that contains a series of statements that are used to create a container image. In line with the _configuration as code_ approach mentioned above, the definition file can be stored in your code repository alongside your application code and used to create a reproducible image. This means that for a given commit in your repository, the version of the definition file present at that commit can be used to reproduce a container with a known state. It was pointed out earlier in the course, when covering Docker, that this property also applies for Dockerfiles.
 
 We'll now look at a very simple example of a definition file:
 
@@ -102,11 +102,11 @@ From: ubuntu:20.04
     apt-get -y update && apt-get install -y python
 
 %runscript
-    python -c 'print("Hello World! Hello from our custom Singularity image!")'
+    python -c 'print("Hello World! Hello from our custom {{ site.software.name }} image!")'
 ~~~
 {: .language-bash}
 
-A definition file has a number of optional sections, specified using the `%` prefix, that are used to define or undertake different configuration during different stages of the image build process. You can find full details in Singularity's [Definition Files documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html). In our very simple example here, we only use the `%post` and `%runscript` sections.
+A definition file has a number of optional sections, specified using the `%` prefix, that are used to define or undertake different configuration during different stages of the image build process. You can find full details in {{ site.software.name }}'s [Definition Files documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html). In our very simple example here, we only use the `%post` and `%runscript` sections.
 
 Let's step through this definition file and look at the lines in more detail:
 
@@ -116,9 +116,9 @@ From: ubuntu:20.04
 ~~~
 {: .language-bash}
 
-These first two lines define where to _bootstrap_ our image from. Why can't we just put some application binaries into a blank image? Any applications or tools that we want to run will need to interact with standard system libraries and potentially a wide range of other libraries and tools. These need to be available within the image and we therefore need some sort of operating system as the basis for our image. The most straightforward way to achieve this is to start from an existing base image containing an operating system. In this case, we're going to start from a minimal Ubuntu 20.04 Linux Docker image. Note that we're using a Docker image as the basis for creating a Singularity image. This demonstrates the flexibility in being able to start from different types of images when creating a new Singularity image.
+These first two lines define where to _bootstrap_ our image from. Why can't we just put some application binaries into a blank image? Any applications or tools that we want to run will need to interact with standard system libraries and potentially a wide range of other libraries and tools. These need to be available within the image and we therefore need some sort of operating system as the basis for our image. The most straightforward way to achieve this is to start from an existing base image containing an operating system. In this case, we're going to start from a minimal Ubuntu 20.04 Linux Docker image. Note that we're using a Docker image as the basis for creating a {{ site.software.name }} image. This demonstrates the flexibility in being able to start from different types of images when creating a new {{ site.software.name }} image.
 
-The `Bootstrap: docker` line is similar to prefixing an image path with `docker://` when using, for example, the `singularity pull` command. A range of [different bootstrap options](https://sylabs.io/guides/3.5/user-guide/definition_files.html#preferred-bootstrap-agents) are supported. `From: ubuntu:20.04` says that we want to use the `ubuntu` image with the tag `20.04` from Docker Hub.
+The `Bootstrap: docker` line is similar to prefixing an image path with `docker://` when using, for example, the `{{ site.software.cmd }} pull` command. A range of [different bootstrap options](https://sylabs.io/guides/3.5/user-guide/definition_files.html#preferred-bootstrap-agents) are supported. `From: ubuntu:20.04` says that we want to use the `ubuntu` image with the tag `20.04` from Docker Hub.
 
 Next we have the `%post` section of the definition file:
 
@@ -136,11 +136,11 @@ Finally we have the `%runscript` section:
 
 ~~~
 %runscript
-    python3 -c 'print("Hello World! Hello from our custom Singularity image!")'
+    python3 -c 'print("Hello World! Hello from our custom {{ site.software.name }} image!")'
 ~~~
 {: .language-bash}
 
-This section is used to define a script that should be run when a container is started based on this image using the `singularity run` command. In this simple example we use `python3` to print out some text to the console.
+This section is used to define a script that should be run when a container is started based on this image using the `{{ site.software.cmd }} run` command. In this simple example we use `python3` to print out some text to the console.
 
 ### More advanced definition files
 
