@@ -65,8 +65,8 @@ software:
   lolcow: "library://sylabsed/examples/lolcow"
   prompt: "Singularity>"
 machine:
-  working_dir: "/nesi/project/nesi99991/ernz2023/"
-  prompt: "[username@mahuika]$"
+  working_dir: "/work/z19/shared"
+  prompt: "$"
 # Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am).
 start_time: 0
 
