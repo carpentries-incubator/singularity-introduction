@@ -10,7 +10,7 @@ keypoints:
 - "Singularity can start a container from a Docker image which can be pulled directly from Docker Hub."
 ---
 
-## Using Docker images with {{ site.software.name }} 
+## Using Docker images with {{ site.software.name }}
 
 {{ site.software.name }}  can also start containers directly from Docker images, opening up access to a huge number of existing container images available on [Docker Hub](https://hub.docker.com/) and other registries.
 
@@ -19,7 +19,7 @@ While {{ site.software.name }}  doesn't actually run a container using the Docke
 Moving on from the simple examples that we've looked at so far, let's pull one of the [official Docker Python images](https://hub.docker.com/_/python). We'll use the image with the tag `3.9.6-slim-buster` which has Python 3.9.6 installed on Debian's [Buster](https://www.debian.org/releases/buster/) (v10) Linux distribution:
 
 ~~~
-$ singularity pull python-3.9.6.sif docker://python:3.9.6-slim-buster
+{{ site.machine.prompt }} {{ site.software.cmd }} pull python-3.9.6.sif docker://python:3.9.6-slim-buster
 ~~~
 {: .language-bash}
 
@@ -57,7 +57,7 @@ We can now run a container from this image as we would with any other singularit
 > > ## Running the Python 3.9.6 image
 > >
 > > ~~~
-> > $ singularity run python-3.9.6.sif
+> > {{ site.machine.prompt }} {{ site.software.cmd }} run python-3.9.6.sif
 > > ~~~
 > > {: .language-bash}
 > > 
@@ -91,9 +91,9 @@ In addition to running a container and having it run the default run script, you
 > 
 > > ## Solution
 > >
-> > Recall from the earlier material that we can use the `singularity shell` command to open a shell within a container. To open a regular shell within a container based on the `python-3.9.6.sif` image, we can therefore simply run:
+> > Recall from the earlier material that we can use the `{{ site.software.cmd }} shell` command to open a shell within a container. To open a regular shell within a container based on the `python-3.9.6.sif` image, we can therefore simply run:
 > > ~~~
-> > $ singularity shell python-3.9.6.sif
+> > {{ site.machine.prompt }} {{ site.software.cmd }} python-3.9.6.sif
 > > ~~~
 > > {: .language-bash}
 > > 
@@ -116,10 +116,10 @@ In addition to running a container and having it run the default run script, you
 > > ~~~
 > > {: .output}
 > > 
-> > It is also possible to use the `singularity exec` command to run an executable within a container. We could, therefore, use the `exec` command to run `/bin/bash`:
+> > It is also possible to use the `{{ site.software.cmd }} exec` command to run an executable within a container. We could, therefore, use the `exec` command to run `/bin/bash`:
 > > 
 > > ~~~
-> > $ singularity exec python-3.9.6.sif /bin/bash
+> > {{ site.machine.prompt }} {{ site.software.cmd }} exec python-3.9.6.sif /bin/bash
 > > ~~~
 > > {: .language-bash}
 > > 
