@@ -1,10 +1,13 @@
 ---
 title: Setup
 ---
-If you are attending a taught version of this lesson, it is likely that the course organisers will provide access to a platform with Singularity and MPI pre-installed for undertaking parts of the lesson. You may be required to undertake an account registration process in order to gain access this platform. The course organisers will provide details in advance.
 
-For building containers, you'll need access to a platform with [Docker](https://www.docker.com/) installed, where either your user is in the `docker` group (i.e. you can run and commit containers and run other docker commands as your own user without having to prefix docker commands with `sudo`), or where your user is configured for sudo access on the system and you can run Docker commands when prefixing them with `sudo`.
+The easiest method for accessing the NeSI cluster is to use our JupyterHub service.  Below are the 
+login and troubleshooting instructions for NeSI JupyterHub:
 
-Beyond any account registration that may be required and the prerequisites described on the main lesson page, there is no further lesson setup to complete.
+1. Follow this link: [https://jupyter.nesi.org.nz](https://jupyter.nesi.org.nz)
+2. Enter your NeSI username, HPC password your 6 digit second factor token ![Login](/fig/Login_jupyterhubNeSI.png)
+3. Choose server options: the session project code should be *NeSI Training ({{site.sched.project}})*, Number of CPUs and memory size will remain unchanged. However, select the appropriate **Wall time** based on the projected length of a session ![Options](/fig/ServerOptions_jupyterhubNeSI.png)
+4. From Jupyter Launcher screen, choose Terminal (highlighted in red box) ![Terminal](/fig/jupyterLauncher.png)
 
 {% include links.md %}
