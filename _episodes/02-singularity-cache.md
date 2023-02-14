@@ -1,26 +1,105 @@
 ---
-title: "The Apptainer cache"
+title: "The container cache"
 teaching: 10
 exercises: 0
 questions:
 - "Why does Apptainer use a local cache?"
 - "Where does Apptainer store images?"
+- "How do I configure my cache to work on NeSI?"
 objectives:
 - "Learn about Apptainer's image cache."
+- "Learn howto setup your cache on Mahuika"
 keypoints:
 - "Apptainer caches downloaded images so that an unchanged image isn't downloaded again when it is requested using the `apptainer pull` command."
 - "You can free up space in the cache by removing all locally cached images or by specifying individual images to remove."
+- "Cache location and configuration requirements on Mahuika cluster"
 ---
 
-## Apptainer's image cache
+## Apptainer's image cache and temporary files
+Apptainer doesn't have a local image repository in the same way as Docker, however, it does cache downloaded image files. Apptainer also uses a temporary directory for building images.
 
-While Apptainer doesn't have a local image repository in the same way as Docker, it does cache downloaded image files. As we saw in the previous episode, images are simply `.sif` files stored on your local disk.
+By default, Apptainer uses `$HOME/.apptainer` as the location for cache and temporary files. However, on NeSI, our home directories are quite small, so we need to move these to a more appropriate location such as our nobackup storage.
 
-If you delete a local `.sif` image that you have pulled from a remote image repository and then pull it again, if the image is unchanged from the version you previously pulled, you will be given a copy of the image file from your local cache rather than the image being downloaded again from the remote source. This removes unnecessary network transfers and is particularly useful for large images which may take some time to transfer over the network. To demonstrate this, remove the `lolcow_latest.sif` file stored in your `test` directory and then issue the `pull` command again:
+You can change the location of the cache by setting environment variables to the cache and temporary directory locations you want to use.  Those environment variables are:
+`APPTAINER_CACHEDIR` & `APPTAINER_TMPDIR`
+
+We will now setup our Apptainer environment for use on NeSI.
+
+## Create a cache and temporary directory for use on NeSI
+Due to our backend high-performance filesystem, special handling of your cache and temporary directories for building and storing container images is required.  What we will do in the following exercise is create a temporary and cache directory, reconfigure the permissions on those directories and then declare special environment variables that will tell `Apptainer` where it should store files and images.
 
 ~~~
-rm lolcow_latest.sif
-apptainer pull docker://ghcr.io/apptainer/lolcow
+export APPTAINER_CACHEDIR=/nesi/nobackup/nesi99991/20230217_nzrse/$USER/apptainer_cache
+export APPTAINER_TMPDIR=/nesi/nobackup/nesi99991/20230217_nzrse/$USER/apptainer_tmp
+mkdir -p $APPTAINER_CACHEDIR $APPTAINER_TMPDIR
+setfacl -b $APPTAINER_TMPDIR
+ls -l /nesi/nobackup/nesi99991/20230217_nzrse/$USER
+~~~
+{: .language-bash}
+
+~~~
+total 1
+drwxrws---+ 2 user001 nesi99991 4096 Feb 10 13:42 apptainer_cache
+drwxrws---  2 user001 nesi99991 4096 Feb 10 13:42 apptainer_tmp
+~~~
+{: .output}
+
+
+## Testing that Apptainer will run on the NeSI Mahuika cluster
+
+### Loading the module
+
+Before you can use the `apptainer` command on the system, you must load the latest module.
+
+~~~
+module purge
+module load Apptainer
+~~~
+{: .language-bash}
+
+### Showing the version
+
+~~~
+apptainer --version
+~~~
+{: .language-bash}
+
+~~~
+apptainer version 1.1.5-dirty
+~~~
+{: .output}
+
+Depending on the version of Apptainer installed on your system, you may see a different version. At the time of writing, `1.1.5` is the latest release of Apptainer.
+
+## Using the image cache and temporary directories
+
+Let's pull an Ubuntu Linux image from DockerHub:
+
+~~~
+apptainer pull docker://ubuntu
+~~~
+{: .language-bash}
+
+~~~
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+Getting image source signatures
+Copying blob 677076032cca done
+Copying config 58db3edaf2 done
+Writing manifest to image destination
+Storing signatures
+2023/02/10 14:05:20  info unpack layer: sha256:677076032cca0a2362d25cf3660072e738d1b96fe860409a33ce901d695d7ee8
+INFO:    Creating SIF file...
+~~~
+{: .output}
+
+So what we did here was to use the `docker://` URL to tell apptainer to go to DockerHub and pull the Ubuntu Docker image.  Apptainer pulls the image and converts it into the image file format used by Apptainer and Singularity: `.sif`.  The image file is save in our current directory as `ubuntu_latest.sif` and a cached copy is in our `$APPTAINER_CACHEDIR`
+
+If you delete the `.sif` image that you have pulled from a remote image repository such as DockerHub, and then pull it again, provided the image is unchanged from the version you previously pulled, you will be given a copy of the image file from your local cache rather than the image being downloaded again from the remote source. This removes unnecessary network transfers and is particularly useful for large images which may take some time to transfer over the network. To demonstrate this, remove the `ubuntu_latest.sif` file stored in your directory and then issue the `pull` command again:
+
+~~~
+rm ubuntu_latest.sif
+apptainer pull docker://ubuntu
 ~~~
 {: .language-bash}
 
@@ -29,7 +108,7 @@ INFO:    Using cached SIF image
 ~~~
 {: .output}
 
-As we can see in the above output, the image has been returned from the cache and we don't see the output that we saw previously showing the image being downloaded from Apptainer Hub.
+As we can see in the above output, the image has been returned from the cache and we don't see the output that we saw previously showing the image being downloaded and converted from Docker Hub.
 
 ## Cleaning the Apptainer image cache
 We can remove images from the cache using the `apptainer cache clean` command. Running the command without any options will display a warning and ask you to confirm that you want to remove everything from your cache.  This is very useful if you are running low on space or do not want to keep old images on disk.
@@ -37,9 +116,12 @@ We can remove images from the cache using the `apptainer cache clean` command. R
 > You can also remove specific images or all images of a particular type. Look at the output of `apptainer cache clean --help` for more information.
 {: .callout}
 
-## Cache location
- ## Cache  and temp file location
- By default, Apptainer uses `$HOME/.apptainer` as the location for cache and temporary files. However, on NeSI, our home directories are quite small, so we need to move these to a more appropriate location such as our nobackup storage.
 
-You can change the location of the cache by setting the `APPTAINER_CACHEDIR` environment variable to the cache location you want to use.
-{: .callout}
+## Setup Apptainer for your project
+When you want to setup an Apptainer environment for your own project, you can replace the `/nesi/nobackup/nesi99991` path with your project nobackup path.   Once done you can also add the environment variables to your personal configuration files, eg.
+~~~
+echo "export APPTAINER_CACHEDIR=/nesi/nobackup/PROJECTID/apptainer_cache" >> $HOME/.bashrc
+echo "export APPTAINER_TMPDIR=/nesi/nobackup/PROJECTID/apptainer_tmp" >> $HOME/.bashrc
+~~~
+
+The `.bashrc` file is read each time you login, ensuring your Apptainer environment variables are set.

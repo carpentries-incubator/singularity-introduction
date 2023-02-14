@@ -1,17 +1,114 @@
 ---
-title: "Using Singularity containers to run commands"
+title: "Using containers to run commands"
 teaching: 10
 exercises: 5
 questions:
+- "How do I use container software on the cluster?"
 - "How do I run different commands within a container?"
 - "How do I access an interactive shell within a container?"
 objectives:
 - "Learn how to run different commands when starting a container."
 - "Learn how to open an interactive shell within a container environment."
 keypoints:
-- "The `singularity exec` is an alternative to `singularity run` that allows you to start a container running a specific command."
-- "The `singularity shell` command can be used to start a container and run an interactive shell within it."
+- "The `apptainer exec` is an alternative to `apptainer run` that allows you to start a container running a specific command."
+- "The `apptainer shell` command can be used to start a container and run an interactive shell within it."
 ---
+
+## Pulling a new image and running a container
+
+We will be working from the training project directory `/nesi/project/nesi99991/20230217_ernz`.
+
+```
+cd /nesi/project/nesi99991/20230217_ernz
+```
+
+
+Let's begin by creating a directory with *your username*, changing into it and *pulling* a test *Hello World* image from a Docker image repository:
+
+~~~
+mkdir /nesi/project/nesi99991/20230217_ernz/$USER
+cd /nesi/project/nesi99991/20230217_ernz/$USER
+apptainer pull docker://ghcr.io/apptainer/lolcow
+~~~
+{: .language-bash}
+
+~~~
+INFO:    Converting OCI blobs to SIF format
+INFO:    Starting build...
+Getting image source signatures
+Copying blob 5ca731fc36c2 done
+Copying blob 16ec32c2132b done
+Copying config fd0daa4d89 done
+Writing manifest to image destination
+Storing signatures
+2023/02/09 12:20:21  info unpack layer: sha256:16ec32c2132b43494832a05f2b02f7a822479f8250c173d0ab27b3de78b2f058
+2023/02/09 12:20:24  info unpack layer: sha256:5ca731fc36c28789c5ddc3216563e8bfca2ab3ea10347e07554ebba1c953242e
+INFO:    Creating SIF file...
+~~~
+{: .output}
+
+We pulled a Docker image from a Docker image repo using the `apptainer pull` command and directed it to store the image file using the default name `lolcow_latest.sif` in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
+
+~~~
+apptainer run lolcow_latest.sif
+~~~
+{: .language-bash}
+
+~~~
+ _________________________
+< Wed Feb 8 23:36:16 2023 >
+ -------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+~~~
+{: .output}
+
+Most images are also directly executable
+
+~~~
+./lolcow_latest.sif
+~~~
+{: .language-bash}
+
+~~~
+ _________________________
+< Wed Feb 8 23:36:36 2023 >
+ -------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+~~~
+{: .output}
+
+How did the container determine what to do when we ran it?! What did running the container actually do to result in the displayed output?
+
+When you run a container from a sif image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `apptainer inspect` command:
+
+~~~
+apptainer inspect -r lolcow_latest.sif | head
+~~~
+{: .language-bash}
+
+~~~
+#!/bin/sh
+OCI_ENTRYPOINT='"/bin/sh" "-c" "date | cowsay | lolcat"'
+OCI_CMD=''
+
+# When SINGULARITY_NO_EVAL set, use OCI compatible behavior that does
+# not evaluate resolved CMD / ENTRYPOINT / ARGS through the shell, and
+# does not modify expected quoting behavior of args.
+if [ -n "$SINGULARITY_NO_EVAL" ]; then
+    # ENTRYPOINT only - run entrypoint plus args
+    if [ -z "$OCI_CMD" ] && [ -n "$OCI_ENTRYPOINT" ]; then
+~~~
+{: .output}
+
+This shows us the first 10 lines of the script within the `lolcow_latest.sif` image configured to run by default when we use the `apptainer run` command.
 
 ## Running specific commands within a container
 
@@ -31,7 +128,7 @@ Hello World!
 
 Here we see that a container has been started from the `lolcow_latest.sif` image and the `echo` command has been run within the container, passing the input `Hello World!`. The command has echoed the provided input to the console and the container has terminated.
 
-Note that the use of `singularity exec` has overriden any run script set within the image metadata and the command that we specified as an argument to `singularity exec` has been run instead.
+Note that the use of `apptainer exec` has overriden any run script set within the image metadata and the command that we specified as an argument to `apptainer exec` has been run instead.
 
 > ## Basic exercise: Running a different command within the "lolcow" container
 >
