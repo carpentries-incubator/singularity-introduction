@@ -67,7 +67,7 @@ What if you need to build an image from a system where you don't have admin priv
 {{ site.software.name }} offers the option to run build remotely, using a **Remote Builder** we will be using the default provided by Sylabs; You will need a Sylabs account and a token to use this feature.
 
 ```
-{{ site.software.cmd }} remote login
+{{ site.machine.prompt }}{{ site.software.cmd }} remote login
 ```
 {: .bash}
 
@@ -87,7 +87,7 @@ INFO:    API Key Verified!
 With this set up, you may use `{{ site.software.cmd }} build -r` to start the remote build. Once finished, the image will be downloaded so that it's ready to use:
 
 ```
-{{ site.software.cmd }} build -r lolcow_remote.sif lolcow.def
+{{ site.machine.prompt }} {{ site.software.cmd }} build -r lolcow_remote.sif lolcow.def
 ```
 {: .bash}
 
@@ -116,7 +116,7 @@ At the time of writing, when using the Remote Builder you won't be able to use t
 You are now ready to push your image to the Cloud Library, *e.g.* via `{{ site.software.cmd }} push`:
 
 ```
-{{ site.software.cmd }} push -U lolcow.sif library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
+{{ site.machine.prompt }} {{ site.software.cmd }} push -U lolcow.sif library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
 ```
 {: .bash}
 
@@ -132,7 +132,7 @@ Also note once again the format for the registry: <user>/<user-collection>/<name
 Finally, you (or other peers) are now able to pull your image from the Cloud Library:
 
 ```
-{{ site.software.cmd }} pull -U library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
+{{ site.machine.prompt }} {{ site.software.cmd }} pull -U library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
 ```
 {: .bash}
 
@@ -168,4 +168,3 @@ sudo singularity shell --writable playbox/
 More information on sandbox images can be found at the [Sylabs docs on building images](https://sylabs.io/guides/3.3/user-guide/build_a_container.html#creating-writable-sandbox-directories).
 
 One last notable feature is the ability to use PGP keys to sign and verify container images. In this way, users of 3rd party containers can double check that the image they're running is bit-by-bit equivalent to the one that the author originally built, largely reducing the possibility to run containers infected by malware. you can find more on this topic at the [Sylabs docs on signing and verifying containers](https://sylabs.io/guides/3.3/user-guide/signNverify.html).  -->
-
