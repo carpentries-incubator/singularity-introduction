@@ -19,19 +19,19 @@ keypoints:
 
 The episodes in this lesson will introduce you to the [{{ site.software.name }}]({ site.software.url }) container platform and demonstrate how to set up and use {{ site.software.name }}.
 
-### Containers vs Virtual Machines
+### What are Containers
 
 A container is an entity providing an isolated software environment (or filesystem) for an application and its dependencies.  
 
 If you have already used a Virtual Machine, or VM, you're actually already familiar with some of the concepts of a container.
 
 <!-- ![Containers vs. VMs]({{ page.root }}/fig/container_vs_vm.png) -->
-<div>
+<div style="text-align: center;">
 <img src="{{ page.root }}/fig/container_vs_vm.png" alt="Containers vs. VMs" width="619" height="331"/>
-<em format="display:block;text-align: center;margin:-20px 0 20px 0;> 
-Credit: Pawsey Centre, <a href='https://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em>
+<div><em>Credit: Pawsey Centre, <a href='https://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em></div>
 </div>
-  
+<br>
+
 The key difference here is that VMs virtualise **hardware** while containers virtualise **operating systems**.  There are other differences (and benefits), in particular containers are:
 
 * lighter weight to run (less CPU and memory usage, faster start-up times)
@@ -88,7 +88,7 @@ A number of tools are available to create, deploy and run containerised applicat
 {: .callout}
 
 ~~~
-{{ site.software.cmd }} --version
+{{ site.machine.prompt }} {{ site.software.cmd }} --version
 ~~~
 {: .language-bash}
 
@@ -104,9 +104,9 @@ Depending on the version of {{ site.software.name }} installed on your system, y
 Let's begin by creating a `test` directory, changing into it and *pulling* a test *Hello World* image from Singularity Hub:
 
 ~~~
-mkdir test
-cd test
-{{ site.software.cmd }} pull {{ site.software.lolcow }}
+{{ site.machine.prompt }} mkdir test
+{{ site.machine.prompt }} cd test
+{{ site.machine.prompt }} {{ site.software.cmd }} pull {{ site.software.lolcow }}
 ~~~
 {: .language-bash}
 
@@ -119,7 +119,7 @@ INFO:    Downloading shub image
 What just happened?! We pulled a SIF image from Singularity Hub using the `{{ site.software.cmd }} pull` command and directed it to store the image file using the name`lolcow_latest.sif`in the current directory. If you run the `ls` command, you should see that the `lolcow_latest.sif` file is now present in the current directory. This is our image and we can now run a container based on this image:
 
 ~~~
-{{ site.software.cmd }} run lolcow_latest.sif
+{{ site.machine.prompt }} run lolcow_latest.sif
 ~~~
 {: .language-bash}
 
@@ -140,7 +140,7 @@ _____________________________
 Most images are also directly executable
 
 ~~~
-./lolcow_latest.sif
+{{ site.machine.prompt }} ./lolcow_latest.sif
 ~~~
 {: .language-bash}
 
@@ -163,7 +163,7 @@ How did the container determine what to do when we ran it?! What did running the
 When you run a container from a {{ site.software.name }} image without using any additional command line arguments, the container runs the default run script that is embedded within the image. This is a shell script that can be used to run commands, tools or applications stored within the image on container startup. We can inspect the image's run script using the `{{ site.software.cmd }} inspect` command:
 
 ~~~
-{{ site.software.cmd }} inspect -r lolcow_latest.sif
+{{ site.machine.prompt }} {{ site.software.cmd }} inspect -r lolcow_latest.sif
 ~~~
 {: .language-bash}
 
