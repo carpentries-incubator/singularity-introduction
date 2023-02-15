@@ -24,12 +24,16 @@ The first thing to note is that when you ran `whoami` within the container shell
 
 For example, if my username were `jc1000`, I'd expect to see the following:
 
-~~~
-{{ site.software.cmd }} shell lolcow_latest.sif
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} shell lolcow_latest.sif
 {{ site.software.prompt }} whoami
-jc1000
-~~~
+```
 {: .language-bash}
+
+```
+jc1000
+```
+{: .output}
 
 But hang on! I downloaded the standard, public version of the `lolcow_latest.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
 
@@ -39,7 +43,7 @@ Assuming this feature is enabled within the installation of Singularity on your 
 
 This means that the host system can effectively ensure that you cannot access/modify/delete any data you should not be able to on the host system and you cannot run anything that you would not have permission to run on the host system since you are restricted to the same user permissions within the container as you are on the host system.
 
-## Files and directories within a {{ site.software.name }}  container
+## Files and directories within a {{ site.software.name }} container
 
 {{ site.software.name }}  also _binds_ some _directories_ from the host system where you are running the `{{ site.software.cmd }}` command into the container that you're starting. Note that this bind process is not copying files into the running container, it is making an existing directory on the host system visible and accessible within the container environment. If you write files to this directory within the running container, when the container shuts down, those changes will persist in the relevant location on the host system.
 
@@ -49,7 +53,7 @@ One directory that is likely to be accessible within a container that you start 
 
 The mapping of file content and directories from a host system into a {{ site.software.name }}  container is illustrated in the example below showing a subset of the directories on the host Linux system and in a {{ site.software.name }}  container:
 
-~~~
+```
 Host system:                                                      {{ site.software.name}}  container:
 -------------                                                     ----------------------
 /                                                                 /
@@ -64,16 +68,16 @@ Host system:                                                      {{ site.softwa
 ├── sbin                                                    └────────>└── jc1000
 └── ...                                                           └── ...
 
-~~~
+```
 {: .output}
 
 > ## Files in {{ site.software.name }} containers
 >
 > Now lets have a look at the permissions inside the containers root directory with the command
 >
-> ~~~
+> ```
 > {{ site.machine.prompt }} ls -l /
-> ~~~
+> ```
 > {: .language-bash}
 > 
 > We see (most) of the directories here are owned by `root` so we would not expect to be able to create files here, same as on the host
@@ -150,13 +154,16 @@ If you need to mount multiple directories, you can either repeat the `-B` flag m
 ```
 {{ site.software.cmd }} -B dir1,dir2,dir3 ...
 ```
-
-You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building {{ site.software.name }}  containers.
-
-```bash
-{{ site.software.cmd }} exec -B $TUTO lolcow_latest.sif ls -Fh $TUTO/assets
+{{ site.machine.prompt }} {{ site.software.cmd }} -B dir1,dir2,dir3 ...
 ```
-{: .source}
+{: .language-bash}
+
+You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building {{ site.software.name }} containers.
+
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} exec -B {{ site.machine.working_dir }} lolcow_latest.sif ls -Fh {{ site.machine.working_dir }}/assets
+```
+{: .language-bash}
 
 ```
 css/   fonts/ img/   js/
@@ -165,23 +172,23 @@ css/   fonts/ img/   js/
 
 <!-- Also, we can write files in a host dir which has been bind mounted in the container:
 
-```bash
-{{ site.software.cmd }} exec -B $TUTO lolcow_latest.sif touch $TUTO/my_example_file
-ls my_example_file
 ```
-{: .source}
+{{ site.machine.prompt }} {{ site.software.cmd }} exec -B {{ site.machine.working_dir }} lolcow_latest.sif touch {{ site.machine.working_dir }}/my_example_file
+{{ site.machine.prompt }} ls my_example_file
+```
+{: .language-bash}
 
 ```
 my_example_file
 ```
 {: .output}
 
-Equivalently, directories to be bind mounted can be specified using the environment variable `SINGULARITY_BINDPATH`:
+Equivalently, directories to be bind mounted can be specified using the environment variable `{{ site.software.name | upcase }}_BINDPATH`:
 
-```bash
-export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 ```
-{: .source}
+{{ site.machine.prompt }} export {{ site.software.name | upcase }}_BINDPATH="dir1,dir2,dir3"
+```
+{: .language-bash}
 
 > ## Mounting `$HOME`
 >
@@ -192,17 +199,17 @@ export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 >
 > If you need to share data inside the container home, you might just mount that specific file/directory, _e.g._
 >
-> ```bash
+> ```
 > -B $HOME/.local
 > ```
-> {: .source}
+> {: .language-bash}
 >
 > Or, if you want a full fledged home, you might define an alternative host directory to act as your container home, as in
 >
-> ```bash
+> ```
 > -B /path/to/fake/home:$HOME
 > ```
-> {: .source}
+> {: .language-bash}
 >
 > Finally, you should also **avoid running a container from your host home**,
 otherwise this will be bind mounted as it is the current working directory.
@@ -212,11 +219,11 @@ otherwise this will be bind mounted as it is the current working directory.
 
 By default, shell variables are inherited in the container from the host:
 
-```bash
-export HELLO=world
-{{ site.software.cmd }}  exec lolcow_latest.sif bash -c 'echo $HELLO'
 ```
-{: .source}
+{{ site.machine.prompt }} export HELLO=world
+{{ site.machine.prompt }} {{ site.software.cmd }}  exec lolcow_latest.sif bash -c 'echo $HELLO'
+```
+{: .language-bash}
 
 ```
 world
@@ -226,11 +233,11 @@ world
 There might be situations where you want to isolate the shell environment of the container; to this end you can use the flag `-C`, or `--containall`:  
 (Note that this will also isolate system directories such as `/tmp`, `/dev` and `/run`)
 
-```bash
-export HELLO=world
-{{ site.software.cmd }}  exec -C lolcow_latest.sif bash -c 'echo $HELLO'
 ```
-{: .source}
+{{ site.machine.prompt }} export HELLO=world
+{{ site.machine.prompt }} {{ site.software.cmd }}  exec -C lolcow_latest.sif bash -c 'echo $HELLO'
+```
+{: .language-bash}
 
 ```
 HELLO
@@ -238,14 +245,14 @@ HELLO
 {: .output}
 
 If you need to pass only specific variables to the container, that might or might
-not be defined in the host, you can define variables that start with `SINGULARITYENV_`;
+not be defined in the host, you can define variables that start with `{{ site.software.name | upcase }}ENV_`;
 this prefix will be automatically trimmed in the container:
 
-```bash
-export SINGULARITYENV_CIAO=mondo
-{{ site.software.cmd }} exec -C lolcow_latest.sif bash -c 'echo $CIAO'
 ```
-{: .source}
+{{ site.machine.prompt }} export {{ site.software.name | upcase }}ENV_CIAO=mondo
+{{ site.machine.prompt }} {{ site.software.cmd }} exec -C lolcow_latest.sif bash -c 'echo $CIAO'
+```
+{: .language-bash}
 
 ```
 mondo
@@ -254,10 +261,10 @@ mondo
 
 An alternative way to define variables is to use the flag `--env`:
 
-```bash
-{{ site.software.cmd }} exec --env CIAO=mondo lolcow_latest.sif bash -c 'echo $CIAO'
 ```
-{: .source}
+{{ site.machine.prompt }} {{ site.software.cmd }} exec --env CIAO=mondo lolcow_latest.sif bash -c 'echo $CIAO'
+```
+{: .language-bash}
 
 ```
 mondo
@@ -266,9 +273,8 @@ mondo
 
 > ## Consistency in your containers
 >
-> If your container is not behaving as expected, a good place to start is adding the `--containall` flag, as an unexpected 
+> If your container is not behaving as expected, a good place to start is adding the `--containall` flag, as an unexpected
 > enviroment variable or bind mount may be the cause.
 {: .callout}
-
 
 \[1\] Gregory M. Kurzer, Containers for Science, Reproducibility and Mobility: {{ site.software.name }}  P2. Intel HPC Developer Conference, 2017. Available at: https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf

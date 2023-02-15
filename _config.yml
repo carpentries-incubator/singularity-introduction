@@ -63,8 +63,10 @@ software:
   cmd: "apptainer"
   url: "https://apptainer.org/"
   lolcow: "docker://ghcr.io/apptainer/lolcow"
-lesson:
+  prompt: "Apptainer>"
+machine:
   working_dir: "/nesi/project/nesi99991/ernz2023/"
+  prompt: "[username@mahuika01]$"
 
 # Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am).
 start_time: 0

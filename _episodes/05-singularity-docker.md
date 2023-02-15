@@ -10,7 +10,7 @@ keypoints:
 - "Singularity can start a container from a Docker image which can be pulled directly from Docker Hub."
 ---
 
-## Using Docker images with {{ site.software.name }} 
+## Using Docker images with {{ site.software.name }}
 
 {{ site.software.name }}  can also start containers directly from Docker images, opening up access to a huge number of existing container images available on [Docker Hub](https://hub.docker.com/) and other registries.
 
@@ -18,12 +18,12 @@ While {{ site.software.name }}  doesn't actually run a container using the Docke
 
 Moving on from the simple examples that we've looked at so far, let's pull one of the [official Docker Python images](https://hub.docker.com/_/python). We'll use the image with the tag `3.9.6-slim-buster` which has Python 3.9.6 installed on Debian's [Buster](https://www.debian.org/releases/buster/) (v10) Linux distribution:
 
-~~~
-$ singularity pull python-3.9.6.sif docker://python:3.9.6-slim-buster
-~~~
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} pull python-3.9.6.sif docker://python:3.9.6-slim-buster
+```
 {: .language-bash}
 
-~~~
+```
 INFO:    Converting OCI blobs to SIF format
 INFO:    Starting build...
 Getting image source signatures
@@ -41,7 +41,7 @@ Storing signatures
 2021/07/27 17:23:40  info unpack layer: sha256:248d7d56b4a792ca7bdfe866fde773a9cf2028f973216160323684ceabb36451
 2021/07/27 17:23:40  info unpack layer: sha256:478d2dfa1a8d7fc4d9957aca29ae4f4187bc2e5365400a842aaefce8b01c2658
 INFO:    Creating SIF file...
-~~~
+```
 {: .output}
 
 Note how we see singularity saying that it's "_Converting OCI blobs to SIF format_". We then see the layers of the Docker image being downloaded and unpacked and written into a single SIF file. Once the process is complete, we should see the python-3.9.6.sif image file in the current directory.
@@ -56,26 +56,26 @@ We can now run a container from this image as we would with any other singularit
 > 
 > > ## Running the Python 3.9.6 image
 > >
-> > ~~~
-> > $ singularity run python-3.9.6.sif
-> > ~~~
+> > ```
+> > {{ site.machine.prompt }} {{ site.software.cmd }} run python-3.9.6.sif
+> > ```
 > > {: .language-bash}
 > > 
 > > This should put you straight into a Python interactive shell within the running container:
 > > 
-> > ~~~
+> > ```
 > > Python 3.9.6 (default, Jul 22 2021, 15:24:21) 
 > > [GCC 8.3.0] on linux
 > > Type "help", "copyright", "credits" or "license" for more information.
 > > >>> 
-> > ~~~
+> > ```
 > > Now try running some simple Python statements:
-> > ~~~
+> > ```
 > > >>> import math
 > > >>> math.pi
 > > 3.141592653589793
 > > >>> 
-> > ~~~
+> > ```
 > > {: .language-python}
 > {: .solution}
 {: .challenge}
@@ -91,13 +91,13 @@ In addition to running a container and having it run the default run script, you
 > 
 > > ## Solution
 > >
-> > Recall from the earlier material that we can use the `singularity shell` command to open a shell within a container. To open a regular shell within a container based on the `python-3.9.6.sif` image, we can therefore simply run:
-> > ~~~
-> > $ singularity shell python-3.9.6.sif
-> > ~~~
+> > Recall from the earlier material that we can use the `{{ site.software.cmd }} shell` command to open a shell within a container. To open a regular shell within a container based on the `python-3.9.6.sif` image, we can therefore simply run:
+> > ```
+> > {{ site.machine.prompt }} {{ site.software.cmd }} python-3.9.6.sif
+> > ```
 > > {: .language-bash}
 > > 
-> > ~~~
+> > ```
 > > {{ site.software.prompt }} echo $SHELL
 > > /bin/bash
 > > {{ site.software.prompt }} cat /etc/issue
@@ -113,20 +113,20 @@ In addition to running a container and having it run the default run script, you
 > > 
 > > {{ site.software.prompt }} exit
 > > $ 
-> > ~~~
+> > ```
 > > {: .output}
 > > 
-> > It is also possible to use the `singularity exec` command to run an executable within a container. We could, therefore, use the `exec` command to run `/bin/bash`:
+> > It is also possible to use the `{{ site.software.cmd }} exec` command to run an executable within a container. We could, therefore, use the `exec` command to run `/bin/bash`:
 > > 
-> > ~~~
-> > $ singularity exec python-3.9.6.sif /bin/bash
-> > ~~~
+> > ```
+> > {{ site.machine.prompt }} {{ site.software.cmd }} exec python-3.9.6.sif /bin/bash
+> > ```
 > > {: .language-bash}
 > > 
-> > ~~~
+> > ```
 > > {{ site.software.prompt }} echo $SHELL
 > > /bin/bash
-> > ~~~
+> > ```
 > > {: .output}
 > > 
 > > You can run the Python console from your container shell simply by running the `python` command.

@@ -16,25 +16,20 @@ keypoints:
 - "The `apptainer` command can be used to pull images from Docker Hub or other locations such as a website and run a container from an image file."
 ---
 
-The episodes in this lesson will introduce you to the [{{ site.software.name }}]({ site.software.url }) container platform and demonstrate how to set up and use {{ site.software.name }}.
+The episodes in this lesson will introduce you to the [{{ site.software.name }}]({{ site.software.url }}) container platform and demonstrate how to set up and use {{ site.software.name }}.
 
-> ## Work in progress
-> This lesson is new material that is under ongoing development. We will introduce Apptainer and demonstrate how to work with it. As the tools and best practices continue to develop, elements of this material are likely to evolve. We welcome any comments or suggestions on how the material can be improved or extended.
-{: .callout}
-
-### Containers vs Virtual Machines
+### What are Containers
 
 A container is an entity providing an isolated software environment (or filesystem) for an application and its dependencies.  
 
 If you have already used a Virtual Machine, or VM, you're actually already familiar with some of the concepts of a container.
 
-<!-- ![Containers vs. VMs]({{ page.root }}/fig/container_vs_vm.png) -->
-<div>
+<div style="text-align: center;">
 <img src="{{ page.root }}/fig/container_vs_vm.png" alt="Containers vs. VMs" width="619" height="331"/>
-<em format="display:block;text-align: center;margin:-20px 0 20px 0;> 
-Credit: Pawsey Centre, <a href='https://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em>
+<div><em>Credit: Pawsey Centre, <a href='https://pawseysc.github.io/sc19-containers/'>Containers in HPC</a></em></div>
 </div>
-  
+<br>
+
 The key difference here is that VMs virtualise **hardware** while containers virtualise **operating systems**.  There are other differences (and benefits), in particular containers are:
 
 * lighter weight to run (less CPU and memory usage, faster start-up times)
@@ -63,7 +58,7 @@ We'll start with a brief note on the terminology used in this section of the cou
 
 A ***container*** is a virtual environment that is based on an image. That is, the files, applications, tools, etc that are available within a running container are determined by the image that the container is started from. It may be possible to start multiple container instances from an image. You could, perhaps, consider an image to be a form of template from which running container instances can be started.
 
-A **registry** is a server application where images are stored and can be accessed by users.  It can be public (*e.g.* *Docker Hub*) or private.
+A ***registry*** is a server application where images are stored and can be accessed by users.  It can be public (*e.g.* *Docker Hub*) or private.
 
 To build an image we need a recipe.  A recipe file is called a **Definition File**, or **def file**, in the *Apptainer* jargon and a **Dockerfile** in the *Docker* world.
 
