@@ -14,9 +14,9 @@ keypoints:
 ---
 
 
-## Preparing to use Singularity for building images
+## Preparing to use {{ site.software.name }} for building images
 
-So far you've been able to work with Singularity from your own user account as a non-privileged user. This part of the Singularity material requires that you use Singularity in an environment where you have administrative (root) access.
+So far you've been able to work with {{ site.software.name }} from your own user account as a non-privileged user. This part of the {{ site.software.name }} material requires that you use {{ site.software.name }} in an environment where you have administrative (root) access.
 
 There are a couple of different ways to work around this restriction.
 
@@ -31,7 +31,7 @@ There are a couple of different ways to work around this restriction.
 </thead>
 <tbody>
   <tr>
-    <td>Install Singularity locally on a system where you do have administrative access.</td>
+    <td>Install {{ site.software.name }} locally on a system where you do have administrative access.</td>
     <td></td>
     <td></td>
     <td>Not possible for many people</td>
@@ -64,10 +64,10 @@ We'll focus on the last two options in this part of the course - _Use a 'remote 
 
 What if you need to build an image from a system where you don't have admin privileges, *i.e.* you can't run commands with *sudo*?
 
-Singularity offers the option to run build remotely, using a **Remote Builder** we will be using the default provided by Sylabs; You will need a Sylabs account and a token to use this feature.
+{{ site.software.name }} offers the option to run build remotely, using a **Remote Builder** we will be using the default provided by Sylabs; You will need a Sylabs account and a token to use this feature.
 
 ```
-singularity remote login
+{{ site.machine.prompt }}{{ site.software.cmd }} remote login
 ```
 {: .bash}
 
@@ -84,10 +84,10 @@ INFO:    API Key Verified!
 ```
 {: .output}
 
-With this set up, you may use `singularity build -r` to start the remote build. Once finished, the image will be downloaded so that it's ready to use:
+With this set up, you may use `{{ site.software.cmd }} build -r` to start the remote build. Once finished, the image will be downloaded so that it's ready to use:
 
 ```
-singularity build -r lolcow_remote.sif lolcow.def
+{{ site.machine.prompt }} {{ site.software.cmd }} build -r lolcow_remote.sif lolcow.def
 ```
 {: .bash}
 
@@ -113,10 +113,10 @@ WARNING: Skipping container verifying
 
 At the time of writing, when using the Remote Builder you won't be able to use the `%files` header in the def file, to copy host files into the image.
 
-You are now ready to push your image to the Cloud Library, *e.g.* via `singularity push`:
+You are now ready to push your image to the Cloud Library, *e.g.* via `{{ site.software.cmd }} push`:
 
 ```
-singularity push -U lolcow.sif library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
+{{ site.machine.prompt }} {{ site.software.cmd }} push -U lolcow.sif library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
 ```
 {: .bash}
 
@@ -132,7 +132,7 @@ Also note once again the format for the registry: <user>/<user-collection>/<name
 Finally, you (or other peers) are now able to pull your image from the Cloud Library:
 
 ```
-singularity pull -U library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
+{{ site.machine.prompt }} {{ site.software.cmd }} pull -U library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
 ```
 {: .bash}
 
@@ -240,4 +240,3 @@ sudo singularity shell --writable playbox/
 More information on sandbox images can be found at the [Sylabs docs on building images](https://sylabs.io/guides/3.3/user-guide/build_a_container.html#creating-writable-sandbox-directories).
 
 One last notable feature is the ability to use PGP keys to sign and verify container images. In this way, users of 3rd party containers can double check that the image they're running is bit-by-bit equivalent to the one that the author originally built, largely reducing the possibility to run containers infected by malware. you can find more on this topic at the [Sylabs docs on signing and verifying containers](https://sylabs.io/guides/3.3/user-guide/signNverify.html).  -->
-

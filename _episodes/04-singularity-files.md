@@ -1,10 +1,10 @@
 ---
-title: "Files in Singularity containers"
+title: "Files in containers"
 teaching: 10
 exercises: 10
 questions:
-- "How do I make data available in a Singularity container?"
-- "What data is made available by default in a Singularity container?"
+- "How do I make data available in a container?"
+- "What data is made available by default in a container?"
 objectives:
 - "Understand that some data from the host system is usually made available by default within a container"
 - "Learn more about how Singularity handles users and binds directories from the host filesystem."
@@ -14,43 +14,47 @@ keypoints:
 - "You can specify additional host system directories to be available in the container."
 ---
 
-The way in which user accounts and access permissions are handeld in Singularity containers is very different from that in Docker (where you effectively always have superuser/root access). When running a Singularity container, you only have the same permissions to access files as the user you are running as on the host system.
+The way in which user accounts and access permissions are handeld in {{ site.software.name }} containers is very different from that in Docker (where you effectively always have superuser/root access). When running a {{ site.software.name }} container, you only have the same permissions to access files as the user you are running as on the host system.
 
-In this episode we'll look at working with files in the context of Singularity containers and how this links with Singularity's approach to users and permissions within containers.
+In this episode we'll look at working with files in the context of {{ site.software.name }} containers and how this links with {{ site.software.name }}'s approach to users and permissions within containers.
 
-## Users within a Singularity container
+## Users within a {{ site.software.name }} container
 
 The first thing to note is that when you ran `whoami` within the container shell you started at the end of the previous episode, you should have seen the username that you were signed in as on the host system when you ran the container.
 
 For example, if my username were `jc1000`, I'd expect to see the following:
 
-~~~
-$ singularity shell lolcow_latest.sif
-Singularity> whoami
-jc1000
-~~~
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} shell lolcow_latest.sif
+{{ site.software.prompt }} whoami
+```
 {: .language-bash}
+
+```
+jc1000
+```
+{: .output}
 
 But hang on! I downloaded the standard, public version of the `lolcow_latest.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
 
 If you have any familiarity with Linux system administration, you may be aware that in Linux, users and their Unix groups are configured in the `/etc/passwd` and `/etc/group` files respectively. In order for the shell within the container to know of my user, the relevant user information needs to be available within these files within the container.
 
-Assuming this feature is enabled within the installation of Singularity on your system, when the container is started, Singularity appends the relevant user and group lines from the host system to the `/etc/passwd` and `/etc/group` files within the container [\[1\]](https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf).
+Assuming this feature is enabled within the installation of Singularity on your system, when the container is started, {{ site.software.name }}  appends the relevant user and group lines from the host system to the `/etc/passwd` and `/etc/group` files within the container [\[1\]](https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf).
 
 This means that the host system can effectively ensure that you cannot access/modify/delete any data you should not be able to on the host system and you cannot run anything that you would not have permission to run on the host system since you are restricted to the same user permissions within the container as you are on the host system.
 
-## Files and directories within a Singularity container
+## Files and directories within a {{ site.software.name }} container
 
-Singularity also _binds_ some _directories_ from the host system where you are running the `singularity` command into the container that you're starting. Note that this bind process is not copying files into the running container, it is making an existing directory on the host system visible and accessible within the container environment. If you write files to this directory within the running container, when the container shuts down, those changes will persist in the relevant location on the host system.
+{{ site.software.name }}  also _binds_ some _directories_ from the host system where you are running the `{{ site.software.cmd }}` command into the container that you're starting. Note that this bind process is not copying files into the running container, it is making an existing directory on the host system visible and accessible within the container environment. If you write files to this directory within the running container, when the container shuts down, those changes will persist in the relevant location on the host system.
 
-There is a default configuration of which files and directories are bound into the container but ultimate control of how things are set up on the system where you are running Singularity is determined by the system administrator. As a result, this section provides an overview but you may find that things are a little different on the system that you're running on.
+There is a default configuration of which files and directories are bound into the container but ultimate control of how things are set up on the system where you are running {{ site.software.name }} is determined by the system administrator. As a result, this section provides an overview but you may find that things are a little different on the system that you're running on.
 
-One directory that is likely to be accessible within a container that you start is your _home directory_.  You may also find that the directory from which you issued the `singularity` command (the _current working directory_) is also mapped.
+One directory that is likely to be accessible within a container that you start is your _home directory_.  You may also find that the directory from which you issued the `{{ site.software.cmd }}` command (the _current working directory_) is also mapped.
 
-The mapping of file content and directories from a host system into a Singularity container is illustrated in the example below showing a subset of the directories on the host Linux system and in a Singularity container:
+The mapping of file content and directories from a host system into a {{ site.software.name }}  container is illustrated in the example below showing a subset of the directories on the host Linux system and in a {{ site.software.name }}  container:
 
-~~~
-Host system:                                                      Singularity container:
+```
+Host system:                                                      {{ site.software.name}}  container:
 -------------                                                     ----------------------
 /                                                                 /
 ├── bin                                                           ├── bin
@@ -64,16 +68,16 @@ Host system:                                                      Singularity co
 ├── sbin                                                    └────────>└── jc1000
 └── ...                                                           └── ...
 
-~~~
+```
 {: .output}
 
-> ## Files in Singularity containers
+> ## Files in {{ site.software.name }} containers
 >
 > Now lets have a look at the permissions inside the containers root directory with the command
 >
-> ~~~
-> ls -l /
-> ~~~
+> ```
+> {{ site.machine.prompt }} ls -l /
+> ```
 > {: .language-bash}
 > 
 > We see (most) of the directories here are owned by `root` so we would not expect to be able to create files here, same as on the host
@@ -119,11 +123,11 @@ You will sometimes need to bind additional host system directories into a contai
 - There may be a shared dataset in a shard location that you need access to in the container
 - You may require executables and software libraries in the container
 
-The `-B` or `--bind` option to the `singularity` command is used to specify additonal binds. Lets try binding the `/nesi/project/nesi99991/ernz2023/shared` directory.
+The `-B` or `--bind` option to the `{{ site.software.cmd }}` command is used to specify additonal binds. Lets try binding the `{{ site.lesson.working_dir }}/shared` directory.
 
 ```
-$ singularity shell -B /nesi/project/nesi99991/ernz2023/shared lolcow_latest.sif
-Singularity> ls /nesi/project/nesi99991/ernz2023/shared
+{{ site.machine.prompt }} {{ site.software.cmd }} shell -B {{ site.lesson.working_dir }}/shared lolcow_latest.sif
+{{ site.software.prompt }} ls {{ site.lesson.working_dir }}/shared
 ```
 {: .language-bash}
 
@@ -135,8 +139,8 @@ some stuff in here
 Note that, by default, a bind is mounted at the same path in the container as on the host system. You can also specify where a host directory is mounted in the container by separating the host path from the container path by a colon (`:`) in the option:
 
 ```
-$ singularity shell -B /nesi/project/nesi99991/ernz2023/shared:/shared lolcow_latest.sif
-Singularity> ls /shared
+{{ site.machine.prompt }} {{ site.software.cmd }}  shell -B {{ site.lesson.working_dir }}/shared:/shared lolcow_latest.sif
+{{ site.software.prompt }} ls /shared
 ```
 {: .language-bash}
 
@@ -147,62 +151,63 @@ some stuff in here
 
 If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
 
-```bash
-singularity -B dir1,dir2,dir3 ...
 ```
-
-<!-- You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building Singularity containers.
-
-```bash
-singularity exec -B $TUTO lolcow_latest.sif ls -Fh $TUTO/assets
+{{ site.machine.prompt }} {{ site.software.cmd }} -B dir1,dir2,dir3 ...
 ```
-{: .source}
+{: .language-bash}
+
+You can also copy data into a container image at build time if there is some static data required in the image. We cover this later in the section on building {{ site.software.name }} containers.
+
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} exec -B {{ site.machine.working_dir }} lolcow_latest.sif ls -Fh {{ site.machine.working_dir }}/assets
+```
+{: .language-bash}
 
 ```
 css/   fonts/ img/   js/
 ```
 {: .output}
 
-<!-- Also, we can write files in a host dir which has been bind mounted in the container:
+Also, we can write files in a host dir which has been bind mounted in the container:
 
-```bash
-singularity exec -B $TUTO lolcow_latest.sif touch $TUTO/my_example_file
-ls my_example_file
 ```
-{: .source}
+{{ site.machine.prompt }} {{ site.software.cmd }} exec -B {{ site.machine.working_dir }} lolcow_latest.sif touch {{ site.machine.working_dir }}/my_example_file
+{{ site.machine.prompt }} ls my_example_file
+```
+{: .language-bash}
 
 ```
 my_example_file
 ```
 {: .output}
 
-Equivalently, directories to be bind mounted can be specified using the environment variable `SINGULARITY_BINDPATH`:
+Equivalently, directories to be bind mounted can be specified using the environment variable `{{ site.software.name | upcase }}_BINDPATH`:
 
-```bash
-export SINGULARITY_BINDPATH="dir1,dir2,dir3"
 ```
-{: .source}
+{{ site.machine.prompt }} export {{ site.software.name | upcase }}_BINDPATH="dir1,dir2,dir3"
+```
+{: .language-bash}
 
 > ## Mounting `$HOME`
 >
-> Depending on the site configuration of Singularity, user home directories might
+> Depending on the site configuration of {{ site.software.name }}, user home directories might
 > or might not be mounted into containers by default.  
 > We do recommend that you **avoid mounting home** whenever possible, to avoid
 > sharing potentially sensitive data, such as SSH keys, with the container, especially if exposing it to the public through a web service.
 >
 > If you need to share data inside the container home, you might just mount that specific file/directory, _e.g._
 >
-> ```bash
+> ```
 > -B $HOME/.local
 > ```
-> {: .source}
+> {: .language-bash}
 >
 > Or, if you want a full fledged home, you might define an alternative host directory to act as your container home, as in
 >
-> ```bash
+> ```
 > -B /path/to/fake/home:$HOME
 > ```
-> {: .source}
+> {: .language-bash}
 >
 > Finally, you should also **avoid running a container from your host home**,
 otherwise this will be bind mounted as it is the current working directory.
@@ -212,11 +217,11 @@ otherwise this will be bind mounted as it is the current working directory.
 
 By default, shell variables are inherited in the container from the host:
 
-```bash
-export HELLO=world
-singularity exec lolcow_latest.sif bash -c 'echo $HELLO'
 ```
-{: .source}
+{{ site.machine.prompt }} export HELLO=world
+{{ site.machine.prompt }} {{ site.software.cmd }}  exec lolcow_latest.sif bash -c 'echo $HELLO'
+```
+{: .language-bash}
 
 ```
 world
@@ -226,11 +231,11 @@ world
 There might be situations where you want to isolate the shell environment of the container; to this end you can use the flag `-C`, or `--containall`:  
 (Note that this will also isolate system directories such as `/tmp`, `/dev` and `/run`)
 
-```bash
-export HELLO=world
-singularity exec -C lolcow_latest.sif bash -c 'echo $HELLO'
 ```
-{: .source}
+{{ site.machine.prompt }} export HELLO=world
+{{ site.machine.prompt }} {{ site.software.cmd }}  exec -C lolcow_latest.sif bash -c 'echo $HELLO'
+```
+{: .language-bash}
 
 ```
 HELLO
@@ -238,14 +243,14 @@ HELLO
 {: .output}
 
 If you need to pass only specific variables to the container, that might or might
-not be defined in the host, you can define variables that start with `SINGULARITYENV_`;
+not be defined in the host, you can define variables that start with `{{ site.software.name | upcase }}ENV_`;
 this prefix will be automatically trimmed in the container:
 
-```bash
-export SINGULARITYENV_CIAO=mondo
-singularity exec -C lolcow_latest.sif bash -c 'echo $CIAO'
 ```
-{: .source}
+{{ site.machine.prompt }} export {{ site.software.name | upcase }}ENV_CIAO=mondo
+{{ site.machine.prompt }} {{ site.software.cmd }} exec -C lolcow_latest.sif bash -c 'echo $CIAO'
+```
+{: .language-bash}
 
 ```
 mondo
@@ -254,10 +259,10 @@ mondo
 
 An alternative way to define variables is to use the flag `--env`:
 
-```bash
-singularity exec --env CIAO=mondo lolcow_latest.sif bash -c 'echo $CIAO'
 ```
-{: .source}
+{{ site.machine.prompt }} {{ site.software.cmd }} exec --env CIAO=mondo lolcow_latest.sif bash -c 'echo $CIAO'
+```
+{: .language-bash}
 
 ```
 mondo
@@ -266,9 +271,8 @@ mondo
 
 > ## Consistency in your containers
 >
-> If your container is not behaving as expected, a good place to start is adding the `--containall` flag, as an unexpected 
+> If your container is not behaving as expected, a good place to start is adding the `--containall` flag, as an unexpected
 > enviroment variable or bind mount may be the cause.
 {: .callout}
 
-
-\[1\] Gregory M. Kurzer, Containers for Science, Reproducibility and Mobility: Singularity P2. Intel HPC Developer Conference, 2017. Available at: https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf
+\[1\] Gregory M. Kurzer, Containers for Science, Reproducibility and Mobility: {{ site.software.name }}  P2. Intel HPC Developer Conference, 2017. Available at: https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf
