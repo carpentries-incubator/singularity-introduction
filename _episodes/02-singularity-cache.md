@@ -1,5 +1,5 @@
 ---
-title: "The container cache"
+title: "The Container Cache"
 teaching: 10
 exercises: 0
 questions:
