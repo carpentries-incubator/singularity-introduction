@@ -152,8 +152,6 @@ some stuff in here
 If you need to mount multiple directories, you can either repeat the `-B` flag multiple times, or use a comma-separated list of paths, _i.e._
 
 ```
-{{ site.software.cmd }} -B dir1,dir2,dir3 ...
-```
 {{ site.machine.prompt }} {{ site.software.cmd }} -B dir1,dir2,dir3 ...
 ```
 {: .language-bash}
@@ -170,7 +168,7 @@ css/   fonts/ img/   js/
 ```
 {: .output}
 
-<!-- Also, we can write files in a host dir which has been bind mounted in the container:
+Also, we can write files in a host dir which has been bind mounted in the container:
 
 ```
 {{ site.machine.prompt }} {{ site.software.cmd }} exec -B {{ site.machine.working_dir }} lolcow_latest.sif touch {{ site.machine.working_dir }}/my_example_file
