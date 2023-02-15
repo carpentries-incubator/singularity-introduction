@@ -1,16 +1,16 @@
 ---
-title: "Building Singularity images"
+title: "Building Apptainer images"
 teaching: 30
 exercises: 30
 questions:
-- "How do I create my own Singularity images?"
+- "How do I create my own Apptainer images?"
 objectives:
-- "Understand the different Singularity container file formats."
-- "Understand how to build and share your own Singularity containers."
+- "Understand the different Apptainer container file formats."
+- "Understand how to build and share your own Apptainer containers."
 keypoints:
-- "Singularity definition files are used to define the build process and configuration for an image."
-- "Singularity's Docker container provides a way to build images on a platform where Singularity is not installed but Docker is available."
-- "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Singularity images."
+- "Apptainer definition files are used to define the build process and configuration for an image."
+- "Apptainer's Docker container provides a way to build images on a platform where Apptainer is not installed but Docker is available."
+- "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Apptainer images."
 ---
 
 

@@ -10,8 +10,8 @@ objectives:
 - "Learn how to run different commands when starting a container."
 - "Learn how to open an interactive shell within a container environment."
 keypoints:
-- "The `apptainer exec` is an alternative to `apptainer run` that allows you to start a container running a specific command."
-- "The `apptainer shell` command can be used to start a container and run an interactive shell within it."
+- "The apptainer exec is an alternative to apptainer run that allows you to start a container running a specific command."
+- "The apptainer shell command can be used to start a container and run an interactive shell within it."
 ---
 
 ## Pulling a new image and running a container
