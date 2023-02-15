@@ -14,7 +14,7 @@ keypoints:
 - "You can specify additional host system directories to be available in the container."
 ---
 
-The way in which user accounts and access permissions are handeld in {{ site.software.name }} containers is very different from that in Docker (where you effectively always have superuser/root access). When running a {{ site.software.name }} container, you only have the same permissions to access files as the user you are running as on the host system.
+The way in which user accounts and access permissions are handled in {{ site.software.name }} containers is very different from that in Docker (where you effectively always have superuser/root access). When running a {{ site.software.name }} container, you only have the same permissions to access files as the user you are running as on the host system.
 
 In this episode we'll look at working with files in the context of {{ site.software.name }} containers and how this links with {{ site.software.name }}'s approach to users and permissions within containers.
 
@@ -35,11 +35,11 @@ jc1000
 ```
 {: .output}
 
-But hang on! I downloaded the standard, public version of the `lolcow_latest.sif` image from Singularity Hub. I haven't customised it in any way. How is it configured with my own user details?!
+But hang on! I downloaded a version of the `lolcow_latest.sif` image from a public container repo. I haven't customised it in any way. How is it configured with my own user details?!
 
 If you have any familiarity with Linux system administration, you may be aware that in Linux, users and their Unix groups are configured in the `/etc/passwd` and `/etc/group` files respectively. In order for the shell within the container to know of my user, the relevant user information needs to be available within these files within the container.
 
-Assuming this feature is enabled within the installation of Singularity on your system, when the container is started, {{ site.software.name }}  appends the relevant user and group lines from the host system to the `/etc/passwd` and `/etc/group` files within the container [\[1\]](https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf).
+Assuming this feature is enabled within the installation of {{ site.software.name }} on your system, when the container is started, {{ site.software.name }}  appends the relevant user and group lines from the host system to the `/etc/passwd` and `/etc/group` files within the container [\[1\]](https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf).
 
 This means that the host system can effectively ensure that you cannot access/modify/delete any data you should not be able to on the host system and you cannot run anything that you would not have permission to run on the host system since you are restricted to the same user permissions within the container as you are on the host system.
 

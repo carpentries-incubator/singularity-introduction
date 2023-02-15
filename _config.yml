@@ -64,6 +64,7 @@ software:
   url: "https://apptainer.org/"
   lolcow: "docker://ghcr.io/apptainer/lolcow"
   prompt: "Apptainer>"
+  version: "version 1.1.5-dirty"
 machine:
   working_dir: "/nesi/project/nesi99991/ernz2023/"
   prompt: "[username@mahuika01]$"

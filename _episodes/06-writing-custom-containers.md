@@ -3,19 +3,19 @@ title: "Creating Container Images"
 teaching: 15
 exercises: 20
 questions:
-- "How can I make my own Singularity container images?"
-- "How do I document the 'recipe' for a Singularity container image"
+- "How can I make my own Apptainer container images?"
+- "How do I document the 'recipe' for a Apptainer container image"
 objectives:
-- "Explain the purpose of a `Singularity Definition File` and show some simple examples."
+- "Explain the purpose of a `Apptainer Definition File` and show some simple examples."
 - "Understand the different Singularity container file formats."
-- "Understand how to build and share your own Singularity containers."
+- "Understand how to build and share your own Apptainer containers."
 - "??Compare the steps of creating a container image interactively versus a `Dockerfile`."
 
 keypoints:
-- "`Definition files`s specify what is within Singularity container images."
+- "`Definition files`s specify what is within Apptainer container images."
 - "The `singularity build` command is used to build a container image from a `Definition file`."
-- "Singularity definition files are used to define the build process and configuration for an image."
-- "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Singularity images."
+- "Apptainer definition files are used to define the build process and configuration for an image."
+- "Existing images from remote registries such as Docker Hub and other public image repositories can be used as a base for creating new Apptainer images."
 ---
 
 There are lots of reasons why you might want to create your **own** {{ site.software.name }} container image.

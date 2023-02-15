@@ -1,13 +1,13 @@
 ---
-title: "Using Docker images with Singularity"
+title: "Using Docker images with Apptainer"
 teaching: 5
 exercises: 10
 questions:
-- "How do I use Docker images with Singularity?"
+- "How do I use Docker images with Apptainer?"
 objectives:
-- "Learn how to run Singularity containers based on Docker images."
+- "Learn how to run Apptainer containers based on Docker images."
 keypoints:
-- "Singularity can start a container from a Docker image which can be pulled directly from Docker Hub."
+- "Apptainer can start a container from a Docker image which can be pulled directly from Docker Hub or other public image repository."
 ---
 
 ## Using Docker images with {{ site.software.name }}
