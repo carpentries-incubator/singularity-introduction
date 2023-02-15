@@ -1,13 +1,13 @@
 ---
-title: "Files in Singularity containers"
+title: "Files in containers"
 teaching: 10
 exercises: 10
 questions:
-- "How do I make data available in a Singularity container?"
-- "What data is made available by default in a Singularity container?"
+- "How do I make data available in a container?"
+- "What data is made available by default in a container?"
 objectives:
 - "Understand that some data from the host system is usually made available by default within a container"
-- "Learn more about how Singularity handles users and binds directories from the host filesystem."
+- "Learn more about how handles users and binds directories from the host filesystem."
 keypoints:
 - "Your current directory and home directory are usually available by default in a container."
 - "You have the same username and permissions in a container as on the host system."
