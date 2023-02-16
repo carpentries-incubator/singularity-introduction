@@ -73,21 +73,21 @@ Create a new file called `build.sh` and enter the following.
 #!/bin/bash -e
 #SBATCH --job-name=apptainer_build
 #SBATCH --partition=milan
-#SBATCH --time=0-00:30:00
+#SBATCH --time=0-00:15:00
 #SBATCH --mem=4GB
 #SBATCH --cpus-per-task=2
 
+module purge
 module load Apptainer
 
 apptainer build --fakeroot my_container.sif my_container.def
 ```
 {: .language-bash}
 
-Submit your new script with
-
+Submit your new script with,
+The `module purge` command will remove unnecessary modules we may have loaded that would interfere with our build.
 
 ```
-{{ site.machine.prompt }} module purge
 {{ site.machine.prompt }} sbatch build.sh
 ```
 {: .language-bash}
@@ -115,14 +115,19 @@ JobID           JobName          Alloc     Elapsed     TotalCPU  ReqMem   MaxRSS
 
 Note, the first job shown there is your Jupyter session.
 
-Once the job is finished you should see the built container file.
+Once the job is finished you should see the built container file `my_container.sif`.
 
 ```
 {{ site.machine.prompt }} ls
 ```
 {: .language-bash}
 
-Note the slurm output, if you don't have `my_container.sif` you will want to check here first.
+```
+apptainer_cache  apptainer_tmp  build.sh  lolcow_latest.sif  my_container.def  my_container.sif  python-3.9.6.sif slurm-33031491.out ubuntu_latest.sif
+```
+{: .output}
+
+Note the slurm output `slurm-33031491.out`, if you don't have `my_container.sif` you will want to check here first.
 
 We can test our new container by running.
 
@@ -135,6 +140,36 @@ module load Apptainer
 
 ```
 Hello World! Hello from our custom Apptainer image!
+```
+{: .output}
+
+We can also inspect our new container, confirm everything looks as it should.
+
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} inspect my_container.sif
+```
+{: .language-bash}
+
+```
+org.label-schema.build-arch: amd64
+org.label-schema.build-date: Friday_17_February_2023_11:52:9_NZDT
+org.label-schema.schema-version: 1.0
+org.label-schema.usage.apptainer.version: 1.1.5-dirty
+org.label-schema.usage.singularity.deffile.bootstrap: docker
+org.label-schema.usage.singularity.deffile.from: ubuntu:20.04
+org.opencontainers.image.ref.name: ubuntu
+org.opencontainers.image.version: 20.04
+```
+{: .output}
+
+{{ site.machine.prompt }} {{ site.software.cmd }} inspect ir my_container.sif
+```
+{: .language-bash}
+
+```
+#!/bin/sh
+
+    python3 -c 'print("Hello World! Hello from our custom Apptaine image!")'
 ```
 {: .output}
 
