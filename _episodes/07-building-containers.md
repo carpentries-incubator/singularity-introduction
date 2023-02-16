@@ -82,6 +82,7 @@ Submit your new script with
 
 
 ```
+{{ site.machine.prompt }} module purge
 {{ site.machine.prompt }} sbatch build.sh
 ```
 {: .language-bash}
@@ -92,17 +93,18 @@ Submitted batch job 33031078
 ```
 {: .output}
 
-You can check the status of your job using `squeue`
+You can check the status of your job using `sacct`
 
 ```
-{{ site.machine.prompt }} squeue --me
+{{ site.machine.prompt }} sacct -X
 ```
 {: .language-bash}
 
 ```
-JOBID         USER     ACCOUNT   NAME        CPUS MIN_MEM PARTITI START_TIME     TIME_LEFT STATE    NODELIST(REASON)    
-33031074      cwal219  nesi99991 spawner-jupy   2      4G interac 2023-02-17T1     7:54:00 RUNNING  wbn003              
-33031086      cwal219  nesi99999 apptainer_bu   2      4G milan   2023-02-17T1       29:53 RUNNING  wmc005     
+JobID           JobName          Alloc     Elapsed     TotalCPU  ReqMem   MaxRSS State      
+--------------- ---------------- ----- ----------- ------------ ------- -------- ---------- 
+33031074        spawner-jupyter+     2    00:27:29     00:00:00      4G          RUNNING    
+33031277        apptainer_build      2    00:00:06     00:00:00      4G          RUNNING    
 ```
 {: .output}
 
@@ -120,13 +122,14 @@ Note the slurm output, if you don't have `my_container.sif` you will want to che
 We can test our new container by running.
 
 ```
-{{ site.machine.prompt }} {{ site.software.cmd }} run my_container.sif
+module load Apptainer
+./my_container.sif
 ```
 {: .language-bash}
 
 
 ```
-Hello World!
+Hello World! Hello from our custom Apptainer image!
 ```
 {: .output}
 
