@@ -13,7 +13,9 @@ keypoints:
 - "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Apptainer images."
 ---
 
-So far you've been able to work with {{ site.software.name }} from your own user account as a non-privileged user. This part of the {{ site.software.name }} material requires that you use {{ site.software.name }} in an environment where you have administrative (root) access.
+So far you've been able to work with {{ site.software.name }} from your own user account as a non-privileged user. 
+
+This part of the {{ site.software.name }} material requires that you use {{ site.software.name }} in an environment where you have administrative (root) access.
 
 There are a couple of different ways to work around this restriction.
 
@@ -28,28 +30,31 @@ There are a couple of different ways to work around this restriction.
 </thead>
 <tbody>
   <tr>
-    <td>Install {{ site.software.name }} locally on a system where you do have administrative access. And then copy to HPC.</td>
+    <td>Install {{ site.software.name }} locally on a system where you do have administrative access (then then copy to HPC).</td>
     <td></td>
-    <td>Building a contanier locally first is great for testing.</td>
-    <td>Not possible for many people. Local machine must have same architecture as HPC. Container image might be quite large and take a long time to copy. </td>
+    <td><ul><li>Building a contanier locally first is great for testing.</li></ul></td>
+    <td><ul><li>Not possible for many people.</li><li>Local machine must have same architecture as HPC.</li><li>Container image might be quite large and take a long time to copy.</li></ul></td>
   </tr>
   <tr>
     <td>Build your container from within another container</td>
     <td></td>
-    <td>No root access required.</td>
-    <td>A bit contrived, requires already having a built container with {{ site.software.name }} installed.</td>
+    <td><ul><li>No root access required.</li></ul></td>
+    <td><ul>
+    <li>A bit contrived.</li>
+    <li>Requires already having a built container with {{ site.software.name }} installed.</li></ul></td>
   </tr>
   <tr>
     <td>Use a 'remote build service' to build your container</td>
     <td></td>
-    <td></td>
-    <td>Requires access to a remote build service. Build image must still be downloaded over network.</td>
+    <td><ul><li>Convenient. Just one command to run.</li></ul></td>
+    <td><ul><li>Requires access to a remote build service.</li><li>Build image must still be downloaded over network.</li>
+    <li>Not currently available for Apptainer</li></ul></td>
   </tr>
   <tr>
     <td>Simulate root access using the <code>--fakeroot</code> feature</td>
     <td></td>
-    <td></td>
-    <td>Not possible with all operating systems. (On NeSI, only our newer nodes with Rocky8 installed have this functionality.)</td>
+    <td><ul><li>Convenient. Just an added flag.</li></ul></td>
+    <td><ul><li>Not possible with all operating systems. (On NeSI, only our newer nodes with Rocky8 installed have this functionality.)</li></ul></td>
 
   </tr>
 </tbody>
