@@ -1,7 +1,7 @@
 ---
 title: "Files in containers"
-teaching: 10
-exercises: 10
+teaching: 15
+exercises: 15
 questions:
 - "How do I make data available in a container?"
 - "What data is made available by default in a container?"

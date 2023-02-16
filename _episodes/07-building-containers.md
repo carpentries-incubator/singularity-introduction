@@ -1,7 +1,7 @@
 ---
 title: "Building Apptainer images"
-teaching: 30
-exercises: 30
+teaching: 10
+exercises: 25
 questions:
 - "How do I create my own Apptainer images?"
 objectives:
