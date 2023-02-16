@@ -31,11 +31,11 @@ We will now setup our {{ site.software.name }} environment for use on NeSI.
 Due to our backend high-performance filesystem, special handling of your cache and temporary directories for building and storing container images is required.  What we will do in the following exercise is create a temporary and cache directory, reconfigure the permissions on those directories and then declare special environment variables that will tell {{ site.software.name }} where it should store files and images.
 
 ```
-{{ site.machine.prompt }} export {{ site.software.name | upcase }}_CACHEDIR={{ site.machine.working_dir }}/$USER/{{ site.software.cmd }}_cache
-{{ site.machine.prompt }} export {{ site.software.name | upcase }}_TMPDIR={{ site.machine.working_dir }}/$USER/{{ site.software.cmd }}_tmp
+{{ site.machine.prompt }} export {{ site.software.name | upcase }}_CACHEDIR={{ site.machine.working_dir }}$USER/{{ site.software.cmd }}_cache
+{{ site.machine.prompt }} export {{ site.software.name | upcase }}_TMPDIR={{ site.machine.working_dir }}$USER/{{ site.software.cmd }}_tmp
 {{ site.machine.prompt }} mkdir -p ${{ site.software.name | upcase }}_CACHEDIR ${{ site.software.name | upcase }}_TMPDIR
 {{ site.machine.prompt }} setfacl -b ${{ site.software.name | upcase }}_TMPDIR
-{{ site.machine.prompt }} ls -l /nesi/nobackup/nesi99991/20230217_nzrse/$USER
+{{ site.machine.prompt }} ls -l {{ site.machine.working_dir }}$USER
 ```
 {: .language-bash}
 
@@ -77,6 +77,7 @@ Depending on the version of {{ site.software.name }} installed on your system, y
 Let's pull an Ubuntu Linux image from DockerHub:
 
 ```
+{{ site.machine.prompt }} cd {{ site.machine.working_dir}}$USER
 {{ site.machine.prompt }} {{ site.software.cmd }} pull docker://ubuntu
 ```
 {: .language-bash}
