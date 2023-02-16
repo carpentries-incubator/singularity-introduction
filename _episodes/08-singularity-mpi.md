@@ -1,20 +1,20 @@
 ---
-title: "Running MPI parallel jobs using Singularity containers"
+title: "Running MPI parallel jobs using containers"
 teaching: 30
 exercises: 40
 questions:
-# - "Can I run MPI parallel codes from Singularity containers on a local/institutional/national HPC platform?"
-- "How do I set up and run an MPI job from a Singularity container?"
+# - "Can I run MPI parallel codes from containers on a local/institutional/national HPC platform?"
+- "How do I set up and run an MPI job from a container?"
 objectives:
-- "Learn how MPI applications within Singularity containers can be run on HPC platforms"
-- "Understand the challenges and related performance implications when running MPI jobs via Singularity"
+- "Learn how MPI applications within containers can be run on HPC platforms"
+- "Understand the challenges and related performance implications when running MPI jobs from a container"
 keypoints:
-- "Singularity images containing MPI applications can be built on one platform and then run on another (e.g. an HPC cluster) if the two platforms have compatible MPI implementations."
-- "When running an MPI application within a Singularity container, use the MPI executable on the host system to launch a Singularity container for each process."
+- "Cotainer images containing MPI applications can be built on one platform and then run on another (e.g. an HPC cluster) if the two platforms have compatible MPI implementations."
+- "When running an MPI application within a container, use the MPI executable on the host system to launch a container for each process."
 - "Think about parallel application performance requirements and how where you build/run your image may affect that."
 ---
 
-## Running MPI parallel codes with {{ site.software.name }} containers
+## Running MPI parallel codes with containers
 
 ### MPI overview
 
@@ -22,7 +22,7 @@ MPI - [Message Passing Interface](https://en.wikipedia.org/wiki/Message_Passing_
 
 When working with an MPI code on a large-scale cluster, a common approach is to compile the code yourself, within your own user directory on the cluster platform, building against the supported MPI implementation on the cluster. Alternatively, if the code is widely used on the cluster, the platform administrators may build and package the application as a module so that it is easily accessible by all users of the cluster.
 
-### MPI codes with {{ site.software.name }} containers
+### MPI codes with containers
 
 We've already seen that building {{ site.software.name }} containers can be impractical without root access. Since we're highly unlikely to have root access on a large institutional, regional or national cluster, building a container directly on the target platform is not normally an option.
 
@@ -107,7 +107,7 @@ _Note that base path of the the executable to run (`$OSU_DIR`) is hardcoded in t
 > > You should be able to build an image from the definition file as follows:
 > > 
 > > ```
-> > $ singularity build osu_benchmarks.sif osu_benchmarks.def
+> > $ {{ software.site.cmd }} build osu_benchmarks.sif osu_benchmarks.def
 > > ```
 > > {: .language-bash}
 > >
@@ -120,7 +120,7 @@ _Note that base path of the the executable to run (`$OSU_DIR`) is hardcoded in t
 > > Start a shell in the {{ site.software.name }} container based on your image and then run a single process job via `mpirun`:
 > > 
 > > ```
-> > $ singularity shell --contain /home/singularity/osu_benchmarks.sif
+> > $ {{ software.site.cmd }} shell --contain /home/singularity/osu_benchmarks.sif
 > > {{ site.software.name }}> mpirun -np 1 $OSU_DIR/startup/osu_hello
 > > ```
 > > {: .language-bash}
@@ -143,7 +143,7 @@ This is where things get interesting and we'll begin by looking at how {{ site.s
 
 If you're familiar with running MPI codes, you'll know that you use `mpirun` (as we did in the previous example), `mpiexec` or a similar MPI executable to start your application. This executable may be run directly on the local system or cluster platform that you're using, or you may need to run it through a job script submitted to a job scheduler. Your MPI-based application code, which will be linked against the MPI libraries, will make MPI API calls into these MPI libraries which in turn talk to the MPI daemon process running on the host system. This daemon process handles the communication between MPI processes, including talking to the daemons on other nodes to exchange information between processes running on different machines, as necessary.
 
-When running code within a {{ site.software.name }} container, we don't use the MPI executables stored within the container (i.e. we DO NOT run `singularity exec mpirun -np <numprocs> /path/to/my/executable`). Instead we use the MPI installation on the host system to run {{ site.software.name }} and start an instance of our executable from within a container for each MPI process. Without {{ site.software.name }} support in an MPI implementation, this results in starting a separate {{ site.software.name }} container instance within each process. This can present some overhead if a large number of processes are being run on a host. Where {{ site.software.name }} support is built into an MPI implementation this can address this potential issue and reduce the overhead of running code from within a container as part of an MPI job.
+When running code within a {{ site.software.name }} container, we don't use the MPI executables stored within the container (i.e. we DO NOT run `{{ software.site.cmd }} exec mpirun -np <numprocs> /path/to/my/executable`). Instead we use the MPI installation on the host system to run {{ site.software.name }} and start an instance of our executable from within a container for each MPI process. Without {{ site.software.name }} support in an MPI implementation, this results in starting a separate {{ site.software.name }} container instance within each process. This can present some overhead if a large number of processes are being run on a host. Where {{ site.software.name }} support is built into an MPI implementation this can address this potential issue and reduce the overhead of running code from within a container as part of an MPI job.
 
 Ultimately, this means that our running MPI code is linking to the MPI libraries from the MPI install within our container and these are, in turn, communicating with the MPI daemon on the host system which is part of the host system's MPI installation. In the case of MPICH, these two installations of MPI may be different but as long as there is [ABI compatibility](https://wiki.mpich.org/mpich/index.php/ABI_Compatibility_Initiative) between the version of MPI installed in your container image and the version on the host system, your job should run successfully.
 
@@ -163,7 +163,7 @@ We can now try running a 2-process MPI run of a point to point benchmark `osu_la
 > 
 > > ## Expected output and discussion
 > > 
-> > As you can see in the mpirun command shown above, we have called `mpirun` on the host system and are passing to MPI the `singularity` executable for which the parameters are the image file and any parameters we want to pass to the image's run script, in this case the path/name of the benchmark executable to run.
+> > As you can see in the mpirun command shown above, we have called `mpirun` on the host system and are passing to MPI the `{{ site.software.cmd }}` executable for which the parameters are the image file and any parameters we want to pass to the image's run script, in this case the path/name of the benchmark executable to run.
 > > 
 > > The following shows an example of the output you should expect to see. You should have latency values shown for message sizes up to 4MB.
 > > 
@@ -203,7 +203,7 @@ We can now try running a 2-process MPI run of a point to point benchmark `osu_la
 > 
 > > ## Expected output and discussion
 > > 
-> > As you will have seen in the commands using the provided template job submission script, we have called `mpirun` on the host system and are passing to MPI the `singularity` executable for which the parameters are the image file and any parameters we want to pass to the image's run script. In this case, the parameters are the path/name of the benchmark executable to run.
+> > As you will have seen in the commands using the provided template job submission script, we have called `mpirun` on the host system and are passing to MPI the `{{ site.software.cmd }}` executable for which the parameters are the image file and any parameters we want to pass to the image's run script. In this case, the parameters are the path/name of the benchmark executable to run.
 > > 
 > > The following shows an example of the output you should expect to see. You should have latency values shown for message sizes up to 4MB.
 > > 
