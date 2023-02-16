@@ -54,23 +54,11 @@ This is because, even though you can share the image, the steps taken to create 
 
 The {{ site.software.name }} Definition File is a text file that contains a series of statements that are used to create a container image. In line with the _configuration as code_ approach mentioned above, the definition file can be stored in your code repository alongside your application code and used to create a reproducible image. This means that for a given commit in your repository, the version of the definition file present at that commit can be used to reproduce a container with a known state. It was pointed out earlier in the course, when covering Docker, that this property also applies for Dockerfiles.
 
-We'll now look at a very simple example of a definition file:
+Now lets start writing a very simple definition file, make a new file called `my_container.def`. (Either with your command line text editor of choice, or with the Jupyter text editor).
 
-```
-Bootstrap: docker
-From: ubuntu:20.04
+The first two lines we are going to add define where to _bootstrap_ our image from, we cannot just put some application binaries into a blank image, we need the standard system libraries and potentially a wide range of other libraries and tools.
 
-%post
-    apt-get -y update && apt-get install -y python
-
-%runscript
-    python -c 'print("Hello World! Hello from our custom {{ site.software.name }} image!")'
-```
-{: .language-bash}
-
-A definition file has a number of optional sections, specified using the `%` prefix, that are used to define or undertake different configuration during different stages of the image build process. You can find full details in {{ site.software.name }}'s [Definition Files documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html). In our very simple example here, we only use the `%post` and `%runscript` sections.
-
-Let's step through this definition file and look at the lines in more detail:
+The most straightforward way to achieve this is to start from an existing base image containing an operating system. In this case, we're going to start from a minimal Ubuntu 20.04 Linux Docker image. Note that we're using a Docker image as the basis for creating a {{ site.software.name }} image.
 
 ```
 Bootstrap: docker
@@ -78,11 +66,17 @@ From: ubuntu:20.04
 ```
 {: .language-bash}
 
-These first two lines define where to _bootstrap_ our image from. Why can't we just put some application binaries into a blank image? Any applications or tools that we want to run will need to interact with standard system libraries and potentially a wide range of other libraries and tools. These need to be available within the image and we therefore need some sort of operating system as the basis for our image. The most straightforward way to achieve this is to start from an existing base image containing an operating system. In this case, we're going to start from a minimal Ubuntu 20.04 Linux Docker image. Note that we're using a Docker image as the basis for creating a {{ site.software.name }} image. This demonstrates the flexibility in being able to start from different types of images when creating a new {{ site.software.name }} image.
+The `Bootstrap: docker` line is similar to prefixing an image path with `docker://` e.g. `{{ site.software.cmd }} pull` command. 
+A range of [different bootstrap options](https://sylabs.io/guides/3.5/user-guide/definition_files.html#preferred-bootstrap-agents) are supported. `From: ubuntu:20.04` says that we want to use the `ubuntu` image with the tag `20.04` from Docker Hub.
 
-The `Bootstrap: docker` line is similar to prefixing an image path with `docker://` when using, for example, the `{{ site.software.cmd }} pull` command. A range of [different bootstrap options](https://sylabs.io/guides/3.5/user-guide/definition_files.html#preferred-bootstrap-agents) are supported. `From: ubuntu:20.04` says that we want to use the `ubuntu` image with the tag `20.04` from Docker Hub.
+A definition also file has a number of optional sections, specified using the `%` prefix, that are used to define or undertake different configuration during different stages of the image build process. You can find full details in {{ site.software.name }}'s [Definition Files documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html).
 
-Next we have the `%post` section of the definition file:
+In our very simple example here, we only use the `%post` and `%runscript` sections.
+The commands that appear in this section are standard shell commands and they are run _within_ the context of our new container image. So, in the case of this example, these commands are being run within the context of a minimal Ubuntu 20.04 image that initially has only a very small set of core packages installed.
+
+Let's step through this definition file and look at the lines in more detail.
+
+First we have the `%post` section of the definition file:
 
 ```
 %post
@@ -90,7 +84,7 @@ Next we have the `%post` section of the definition file:
 ```
 {: .language-bash}
 
-In this section of the file we can do tasks such as package installation, pulling data files from remote locations and undertaking local configuration within the image. The commands that appear in this section are standard shell commands and they are run _within_ the context of our new container image. So, in the case of this example, these commands are being run within the context of a minimal Ubuntu 20.04 image that initially has only a very small set of core packages installed.
+The `%post` section is where most of the customisation of your container will happen. This includes tasks such as package installation, pulling data files from remote locations and undertaking local configuration within the image.
 
 Here we use Ubuntu's package manager to update our package indexes and then install the `python3` package along with any required dependencies. The `-y` switches are used to accept, by default, interactive prompts that might appear asking you to confirm package updates or installation. This is required because our definition file should be able to run in an unattended, non-interactive environment.
 
@@ -103,6 +97,21 @@ Finally we have the `%runscript` section:
 {: .language-bash}
 
 This section is used to define a script that should be run when a container is started based on this image using the `{{ site.software.cmd }} run` command. In this simple example we use `python3` to print out some text to the console.
+
+
+Your full definition file should look like this:
+
+```
+Bootstrap: docker
+From: ubuntu:20.04
+
+%post
+    apt-get -y update && apt-get install -y python3
+
+%runscript
+    python3 -c 'print("Hello World! Hello from our custom {{ site.software.name }} image!")'
+```
+{: .language-bash}
 
 ### More advanced definition files
 
@@ -117,7 +126,6 @@ Here we've looked at a very simple example of how to create an image. At this st
 - `%help`
 
 The [`Sections` part of the definition file documentation](https://sylabs.io/guides/3.5/user-guide/definition_files.html#sections) details all the sections and provides an example definition file that makes use of all the sections.
-
 
 ### Useful base images
 
