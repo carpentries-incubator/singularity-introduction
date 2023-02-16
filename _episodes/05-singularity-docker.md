@@ -1,5 +1,5 @@
 ---
-title: "Using Docker images with Apptainer"
+title: "Using Docker Images"
 teaching: 5
 exercises: 10
 questions:
@@ -93,7 +93,7 @@ In addition to running a container and having it run the default run script, you
 > >
 > > Recall from the earlier material that we can use the `{{ site.software.cmd }} shell` command to open a shell within a container. To open a regular shell within a container based on the `python-3.9.6.sif` image, we can therefore simply run:
 > > ```
-> > {{ site.machine.prompt }} {{ site.software.cmd }} python-3.9.6.sif
+> > {{ site.machine.prompt }} {{ site.software.cmd }} shell python-3.9.6.sif
 > > ```
 > > {: .language-bash}
 > > 
@@ -132,7 +132,3 @@ In addition to running a container and having it run the default run script, you
 > > You can run the Python console from your container shell simply by running the `python` command.
 > {: .solution}
 {: .challenge}
-
-## References
-
-\[1\] Gregory M. Kurzer, Containers for Science, Reproducibility and Mobility: Singularity P2. Intel HPC Developer Conference, 2017. Available at: https://www.intel.com/content/dam/www/public/us/en/documents/presentation/hpc-containers-singularity-advanced.pdf

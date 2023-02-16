@@ -1,5 +1,5 @@
 ---
-title: "Building Apptainer images"
+title: "Building Container Images"
 teaching: 10
 exercises: 25
 questions:
@@ -28,37 +28,120 @@ There are a couple of different ways to work around this restriction.
 </thead>
 <tbody>
   <tr>
-    <td>Install {{ site.software.name }} locally on a system where you do have administrative access.</td>
+    <td>Install {{ site.software.name }} locally on a system where you do have administrative access. And then copy to HPC.</td>
     <td></td>
-    <td></td>
-    <td>Not possible for many people</td>
+    <td>Building a contanier locally first is great for testing.</td>
+    <td>Not possible for many people. Local machine must have same architecture as HPC. Container image might be quite large and take a long time to copy. </td>
   </tr>
   <tr>
     <td>Build your container from within another container</td>
     <td></td>
-    <td></td>
-    <td>A bit contrived</td>
+    <td>No root access required.</td>
+    <td>A bit contrived, requires already having a built container with {{ site.software.name }} installed.</td>
   </tr>
   <tr>
     <td>Use a 'remote build service' to build your container</td>
     <td></td>
     <td></td>
-    <td></td>
+    <td>Requires access to a remote build service. Build image must still be downloaded over network.</td>
   </tr>
   <tr>
-    <td>Simulate root access using the `--fakeroot` feature</td>
+    <td>Simulate root access using the <code>--fakeroot</code> feature</td>
     <td></td>
     <td></td>
-    <td></td>
+    <td>Not possible with all operating systems. (On NeSI, only our newer nodes with Rocky8 installed have this functionality.)</td>
+
   </tr>
 </tbody>
 </table>
 
-We'll focus on the last two options in this part of the course - _Use a 'remote build service' to build your container_ and _Simulate root access using the `--fakeroot` feature_.
+We'll focus on the last option in this part of the course - _Simulate root access using the `--fakeroot` feature_.
+
+## Building container via Slurm
+
+The new Mahuika Extension nodes can be used to build Apptainer containers using the [fakeroot feature](https://apptainer.org/docs/user/main/fakeroot.html). This functionality is only available on these nodes at the moment due to their operating system version.
+
+Since the Mahuika Extension nodes are not directly accessable, you will have to create a slurm script.
+Create a new file called `build.sh` and enter the following.
+
+```
+#!/bin/bash -e
+#SBATCH --job-name=apptainer_build
+#SBATCH --partition=milan
+#SBATCH --time=0-00:30:00
+#SBATCH --mem=4GB
+#SBATCH --cpus-per-task=2
+
+module load Apptainer
+
+apptainer build --fakeroot my_container.sif my_container.def
+```
+{: .language-bash}
+
+Submit your new script with
+
+
+```
+{{ site.machine.prompt }} sbatch build.sh
+```
+{: .language-bash}
+
+
+```
+Submitted batch job 33031078
+```
+{: .output}
+
+You can check the status of your job using `squeue`
+
+```
+{{ site.machine.prompt }} squeue --me
+```
+{: .language-bash}
+
+```
+JOBID         USER     ACCOUNT   NAME        CPUS MIN_MEM PARTITI START_TIME     TIME_LEFT STATE    NODELIST(REASON)    
+33031074      cwal219  nesi99991 spawner-jupy   2      4G interac 2023-02-17T1     7:54:00 RUNNING  wbn003              
+33031086      cwal219  nesi99999 apptainer_bu   2      4G milan   2023-02-17T1       29:53 RUNNING  wmc005     
+```
+{: .output}
+
+Note, the first job shown there is your Jupyter session.
+
+Once the job is finished you should see the built container file.
+
+```
+{{ site.machine.prompt }} ls
+```
+{: .language-bash}
+
+Note the slurm output, if you don't have `my_container.sif` you will want to check here first.
+
+We can test our new container by running.
+
+```
+{{ site.machine.prompt }} {{ site.software.cmd }} run my_container.sif
+```
+{: .language-bash}
+
+
+```
+Hello World!
+```
+{: .output}
+
+### Known limitations
+
+This method, ( i.e using fakeroot), is known to **not** work for all types of Apptainer/Singularity containers.
+
+If your container uses RPM to install packages, i.e. is based on CentOS or Rocky Linux, you need to disable the `APPTAINER_TMPDIR` environment variable (use `unset APPTAINER_TMPDIR`) and request more memory for your Slurm job. Otherwise, RPM will crash due to an incompatibility with the `nobackup` filesystem.
 
 ## Remote build
 
-What if you need to build an image from a system where you don't have admin privileges, *i.e.* you can't run commands with *sudo*?
+> ## Apptainer remote builder
+>
+> Currently there are no freely available remote builders for Apptainer.
+{: .callout}
 
 {{ site.software.name }} offers the option to run build remotely, using a **Remote Builder** we will be using the default provided by Sylabs; You will need a Sylabs account and a token to use this feature.
 
@@ -139,58 +222,6 @@ WARNING: Skipping container verification
 INFO:    Download complete: lolcow_30oct19.sif
 ```
 {: .output}
-
-## Building container via Slurm
-
-The new Mahuika Extension nodes can be used to build Apptainer containers using the [fakeroot feature](https://apptainer.org/docs/user/main/fakeroot.html). This functionality is only available on these nodes at the moment due to their operating system version.
-
-To illustrate this functionality, create an example container definition file `my_container.def` from a shell session on NeSI as follows:
-
-```
-cat << EOF > my_container.def
-BootStrap: docker
-From: ubuntu:20.04
-%post
-    apt-get -y update
-    apt-get install -y wget
-EOF
-```
-{: .language-bash}
-
-
-Then, from a Mahuika login node, you can build the container using the `srun` command as follows:
-
-```
-module load Apptainer
-module unload XALT
-srun -p milan --time 0-00:30:00 --mem 4GB --cpus-per-task 2 apptainer build --fakeroot my_container.sif my_container.def
-```
-{: .language-bash}
-
-This command will start an interactive Slurm job for 30 minutes using 2 cores and 4 GB of memory to build the image. Make sure to set these resources correctly, some containers can take hours to build and require tens of GB of memory.
-
-If you need more resources to build your container, please consider submitting your job using a Slurm submission script, for example:
-
-```
-#!/bin/bash -e
-#SBATCH --job-name=apptainer_build
-#SBATCH --partition=milan
-#SBATCH --time=0-00:30:00
-#SBATCH --mem=4GB
-#SBATCH --cpus-per-task=2
-
-module load Apptainer
-module unload XALT
-
-apptainer build --fakeroot my_container.sif my_container.def
-```
-{: .language-bash}
-
-### Known limitations
-
-This method, ( i.e using fakeroot), is known to **not** work for all types of Apptainer/Singularity containers.
-
-If your container uses RPM to install packages, i.e. is based on CentOS or Rocky Linux, you need to disable the `APPTAINER_TMPDIR` environment variable (use `unset APPTAINER_TMPDIR`) and request more memory for your Slurm job. Otherwise, RPM will crash due to an incompatibility with the `nobackup` filesystem.
 
 <!-- ### Other build options -->
 

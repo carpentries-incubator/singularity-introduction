@@ -9,7 +9,7 @@ objectives:
 - "Explain the purpose of a `Apptainer Definition File` and show some simple examples."
 - "Understand the different Singularity container file formats."
 - "Understand how to build and share your own Apptainer containers."
-- "??Compare the steps of creating a container image interactively versus a `Dockerfile`."
+- "Compare the steps of creating a container image interactively versus a `Definition file`."
 
 keypoints:
 - "`Definition files`s specify what is within Apptainer container images."
@@ -26,7 +26,7 @@ There are lots of reasons why you might want to create your **own** {{ site.soft
 
 ## Sandbox installation
 
-The most intuative way to build a container is to do so interactively, this allows you to install packages, configure applications and test commands, then when finished export as an image.
+The most intuitive way to build a container is to do so interactively, this allows you to install packages, configure applications and test commands, then when finished export as an image.
 
 This is possible using the `--sandbox` flag, for example
 
@@ -52,7 +52,7 @@ This is because, even though you can share the image, the steps taken to create 
 
 ### Creating a {{ site.software.name }} Definition File
 
-A {{ site.software.name }} Definition File is a text file that contains a series of statements that are used to create a container image. In line with the _configuration as code_ approach mentioned above, the definition file can be stored in your code repository alongside your application code and used to create a reproducible image. This means that for a given commit in your repository, the version of the definition file present at that commit can be used to reproduce a container with a known state. It was pointed out earlier in the course, when covering Docker, that this property also applies for Dockerfiles.
+The {{ site.software.name }} Definition File is a text file that contains a series of statements that are used to create a container image. In line with the _configuration as code_ approach mentioned above, the definition file can be stored in your code repository alongside your application code and used to create a reproducible image. This means that for a given commit in your repository, the version of the definition file present at that commit can be used to reproduce a container with a known state. It was pointed out earlier in the course, when covering Docker, that this property also applies for Dockerfiles.
 
 We'll now look at a very simple example of a definition file:
 
