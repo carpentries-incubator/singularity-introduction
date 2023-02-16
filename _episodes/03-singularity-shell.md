@@ -16,19 +16,10 @@ keypoints:
 
 ## Pulling a new image and running a container
 
-We will be working from the training project directory `{{ site.machine.working_dir }}`.
+Lets continue by pulling a new image from another public image repository and start to work with the container.
 
 ```
-{{ site.machine.prompt }} cd {{ site.machine.working_dir }}
-```
-{: .language-bash}
-
-
-Let's begin by creating a directory with *your username*, changing into it and *pulling* a test *Hello World* image from a Docker image repository:
-
-```
-{{ site.machine.prompt }} mkdir {{ site.machine.working_dir }}/$USER
-{{ site.machine.prompt }} cd {{ site.machine.working_dir }}/$USER
+{{ site.machine.prompt }} cd {{ site.machine.working_dir }}$USER
 {{ site.machine.prompt }} {{ site.software.cmd }} pull docker://ghcr.io/apptainer/lolcow
 ```
 {: .language-bash}
@@ -189,20 +180,20 @@ If you want to open an interactive shell within a container, Singularity provide
 {: .output}
 
 ```
-{{ site.software.prompt }} ls
+{{ site.software.prompt }} pwd
 ```
 {: .language-bash}
 
 ```
-lolcow_latest.sif
+/home/<username>
 ```
 {: .output}
 
-As shown above, we have opened a shell in a new container started from the `lolcow_latest.sif` image. Note that the shell prompt has changed to show we are now within the Singularity container.
+As shown above, we have opened a shell in a new container started from the `lolcow_latest.sif` image. Note that the shell prompt has changed to show we are now within the container.
 
-> ## Discussion: Running a shell inside a Singularity container
+> ## Discussion: Running a shell inside a container
 >
-> Q: What do you notice about the output of the above commands entered within the Singularity container shell?
+> Q: What do you notice about the output of the above commands entered within the container shell?
 >
 > Q: Does this differ from what you might see within a Docker container?
 {: .discussion}
