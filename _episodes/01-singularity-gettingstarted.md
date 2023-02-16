@@ -1,7 +1,7 @@
 ---
 title: "Getting Started with Containers"
 start: true
-teaching: 10
+teaching: 20
 exercises: 0
 questions:
 - "What is a container and why might I want to use it?"
@@ -66,10 +66,28 @@ To build an image we need a recipe.  A recipe file is called a **Definition File
 
 A number of tools are available to create, deploy and run containerised applications.  Some of these will be covered throughout this tutorial:
 
-* **Docker**: the first engine to gain popularity, still widely used in the IT industry.  Not very suitable for HPC as it requires *root* privileges to run. We'll use it mostly to build container images. See the extensive [online documentation](https://docs.docker.com/) for more information.
+#### Docker
 
-* **Singularity**: a simple, powerful *root*-less container engine for the HPC world. The main focus of this workshop. See the [user guide](https://sylabs.io/guides/latest/user-guide/) for extensive documentation.
+![Docker Logo](/fig/logo_docker.png){: height="50" style="float:left;display:inline-block;margin:0 10px 0 0"}
 
-* **Apptainer**: an open-source offshoot of **Singularity**. Provides all the same functionality as **Singularity** and moving forward will likely become the open-source standard. See the [user guide](https://apptainer.org/docs/user/main/) for extensive documentation.
+The first engine to gain popularity, still widely used in the IT industry.  Not very suitable for HPC as it requires *root* privileges to run.
+
+See the [documentation](https://docs.docker.com/) for more information.
+
+#### Singularity
+
+![Singularity Logo](/fig/logo_singularity.png){: height="50" style="float:left;display:inline-block;margin:0 10px 0 0"}
+
+A simple, powerful *root*-less container engine for the HPC world. Originally developed at the Lawrence Berkeley National Laboratory.
+
+See the [documentation](https://sylabs.io/guides/latest/user-guide/) for more information.
+
+#### Apptainer  
+
+![Apptainer Logo](/fig/logo_apptainer.png){: height="50" style="float:left;display:inline-block;margin:0 10px 0 0"}
+
+An open-source fork of **Singularity**. Extends the functionality of **Singularity** and moving forward will likely become the open-source standard.
+
+See the [documentation](https://apptainer.org/docs/user/main/) for more information.
 
 That concludes this container overview. The next episode looks in more detail at setting up your environment for running containers on the NeSI cluster.

@@ -1,6 +1,6 @@
 ---
 title: "Creating Container Images"
-teaching: 15
+teaching: 10
 exercises: 20
 questions:
 - "How can I make my own Apptainer container images?"

@@ -70,7 +70,7 @@ machine:
   prompt: "[username@mahuika01]$"
 
 # Start time in minutes (0 to be clock-independent, 540 to show a start at 09:00 am).
-start_time: 0
+start_time: 660
 
 # Specify that things in the episodes collection should be output.
 collections:
@@ -98,6 +98,16 @@ defaults:
     values:
       root: ..
       layout: page
+
+episode_order:
+  - 01-singularity-gettingstarted
+  - 02-singularity-cache
+  - 03-singularity-shell
+  - 04-singularity-files
+  - lunch-break
+  - 05-singularity-docker
+  - 06-writing-custom-containers
+  - 07-building-containers
 
 # Files and directories that are not to be copied.
 exclude:

@@ -1,6 +1,6 @@
 ---
 title: "The Container Cache"
-teaching: 10
+teaching: 20
 exercises: 0
 questions:
 - "Why does Apptainer use a local cache?"

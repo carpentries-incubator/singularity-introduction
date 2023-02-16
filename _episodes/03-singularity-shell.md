@@ -1,6 +1,6 @@
 ---
 title: "Using containers to run commands"
-teaching: 10
+teaching: 15
 exercises: 5
 questions:
 - "How do I use container software on the cluster?"
