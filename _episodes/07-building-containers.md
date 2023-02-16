@@ -13,9 +13,6 @@ keypoints:
 - "Existing images from remote registries such as Docker Hub and Singularity Hub can be used as a base for creating new Apptainer images."
 ---
 
-
-## Preparing to use {{ site.software.name }} for building images
-
 So far you've been able to work with {{ site.software.name }} from your own user account as a non-privileged user. This part of the {{ site.software.name }} material requires that you use {{ site.software.name }} in an environment where you have administrative (root) access.
 
 There are a couple of different ways to work around this restriction.
@@ -59,17 +56,16 @@ There are a couple of different ways to work around this restriction.
 
 We'll focus on the last two options in this part of the course - _Use a 'remote build service' to build your container_ and _Simulate root access using the `--fakeroot` feature_.
 
-
-### Remote build
+## Remote build
 
 What if you need to build an image from a system where you don't have admin privileges, *i.e.* you can't run commands with *sudo*?
 
 {{ site.software.name }} offers the option to run build remotely, using a **Remote Builder** we will be using the default provided by Sylabs; You will need a Sylabs account and a token to use this feature.
 
 ```
-{{ site.machine.prompt }}{{ site.software.cmd }} remote login
+{{ site.machine.prompt }} {{ site.software.cmd }} remote login
 ```
-{: .bash}
+{: .language-bash}
 
 ```
 Generate an API Key at https://cloud.sylabs.io/auth/tokens, and paste here:
@@ -89,7 +85,7 @@ With this set up, you may use `{{ site.software.cmd }} build -r` to start the re
 ```
 {{ site.machine.prompt }} {{ site.software.cmd }} build -r lolcow_remote.sif lolcow.def
 ```
-{: .bash}
+{: .language-bash}
 
 ```
 INFO:    Remote "default" added.
@@ -118,7 +114,7 @@ You are now ready to push your image to the Cloud Library, *e.g.* via `{{ site.s
 ```
 {{ site.machine.prompt }} {{ site.software.cmd }} push -U lolcow.sif library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
 ```
-{: .bash}
+{: .language-bash}
 
 ```
 WARNING: Skipping container verifying
@@ -134,9 +130,9 @@ Finally, you (or other peers) are now able to pull your image from the Cloud Lib
 ```
 {{ site.machine.prompt }} {{ site.software.cmd }} pull -U library://<YOUR-SYLABS-USERNAME>/default/lolcow:30oct19
 ```
-{: .bash}
+{: .language-bash}
 
-```bash
+```
 INFO:    Downloading library image
  67.07 MiB / 67.07 MiB [===================================================================================================================================] 100.00% 8.10 MiB/s 8s
 WARNING: Skipping container verification
@@ -144,36 +140,13 @@ INFO:    Download complete: lolcow_30oct19.sif
 ```
 {: .output}
 
-> ### Service Status
-> 
-> Mahuika's new nodes are in an **Early Access Programme (EAP) phase** and not fully in production.
-> 
-> See [Mahuika Extension Onboarding](/hc/en-gb/articles/5002335382543) for more information about it.
-
-This article describes a technique to build [Apptainer](https://apptainer.org/) containers using Mahuika Extension nodes, via a Slurm job. You can also build [Singularity](/hc/en-gb/articles/360001107916) container using this technique.
-
-## Build Environment Variables
-
-To build containers, you need to ensure that Apptainer has enough storage space to create intermediate files. It also requires a cache folder to save images pulled from a different location (e.g. DockerHub). By default both of these locations are set to `/tmp` which has limited space, large builds may exceed this limitation causing the builder to crash.
-
-The environment variables `APPTAINER_TMPDIR` and `APPTAINER_CACHEDIR` environment can be used to overwrite the default location of these directories.
-
-```bash
-export APPTAINER_CACHEDIR=/nesi/nobackup/PROJECTID/apptainer_cache
-export APPTAINER_TMPDIR=/nesi/nobackup/PROJECTID/apptainer_tmpdir
-mkdir -p $APPTAINER_CACHEDIR $APPTAINER_TMPDIR
-setfacl -b $APPTAINER_TMPDIR
-```
-
-where `PROJECTID` is your NeSI project ID.
-
 ## Building container via Slurm
 
 The new Mahuika Extension nodes can be used to build Apptainer containers using the [fakeroot feature](https://apptainer.org/docs/user/main/fakeroot.html). This functionality is only available on these nodes at the moment due to their operating system version.
 
 To illustrate this functionality, create an example container definition file `my_container.def` from a shell session on NeSI as follows:
 
-```bash
+```
 cat << EOF > my_container.def
 BootStrap: docker
 From: ubuntu:20.04
@@ -182,20 +155,23 @@ From: ubuntu:20.04
     apt-get install -y wget
 EOF
 ```
+{: .language-bash}
+
 
 Then, from a Mahuika login node, you can build the container using the `srun` command as follows:
 
-```bash
+```
 module load Apptainer
 module unload XALT
 srun -p milan --time 0-00:30:00 --mem 4GB --cpus-per-task 2 apptainer build --fakeroot my_container.sif my_container.def
 ```
+{: .language-bash}
 
 This command will start an interactive Slurm job for 30 minutes using 2 cores and 4 GB of memory to build the image. Make sure to set these resources correctly, some containers can take hours to build and require tens of GB of memory.
 
 If you need more resources to build your container, please consider submitting your job using a Slurm submission script, for example:
 
-```bash
+```
 #!/bin/bash -e
 #SBATCH --job-name=apptainer_build
 #SBATCH --partition=milan
@@ -208,15 +184,14 @@ module unload XALT
 
 apptainer build --fakeroot my_container.sif my_container.def
 ```
+{: .language-bash}
 
-# Known limitations
+### Known limitations
+
+This method, ( i.e using fakeroot), is known to **not** work for all types of Apptainer/Singularity containers.
 
 If your container uses RPM to install packages, i.e. is based on CentOS or Rocky Linux, you need to disable the `APPTAINER_TMPDIR` environment variable (use `unset APPTAINER_TMPDIR`) and request more memory for your Slurm job. Otherwise, RPM will crash due to an incompatibility with the `nobackup` filesystem.
 
-> ### Other limitations
-> 
-> This method, using fakeroot, is known to **not** work for all types of Apptainer/Singularity containers.
-> 
 <!-- ### Other build options -->
 
 <!-- The def file specification has a number of other interesting features, to know more about them you can visit the [Sylabs docs on def files](https://sylabs.io/guides/3.3/user-guide/definition_files.html).
