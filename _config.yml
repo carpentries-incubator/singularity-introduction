@@ -105,7 +105,6 @@ episode_order:
   - 03-singularity-shell
   - 04-singularity-files
   - lunch-break
-  - 05-singularity-docker
   - 06-writing-custom-containers
   - 07-building-containers
 
