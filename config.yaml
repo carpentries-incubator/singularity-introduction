@@ -27,7 +27,7 @@ life_cycle: 'alpha'
 license: 'CC-BY 4.0'
 
 # Link to the source repository for this lesson
-source: 'https://github.com/fishtree-attempt/singularity-introduction/'
+source: 'https://github.com/carpentries-incubator/singularity-introduction/'
 
 # Default branch of your lesson
 branch: 'main'
